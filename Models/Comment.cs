@@ -39,6 +39,9 @@ namespace BlogProject.Models
         [Display(Name = "Moderated Comment")]
         public string ModeratedBody { get; set; }
 
+        [Display(Name = "Moderation Reason")]
+        public ModerationType ModerationType { get; set; }
+
         // Navigation properties
         public virtual Post Post { get; set; }
         public virtual IdentityUser Author { get; set; }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BlogProject.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -32,7 +33,7 @@ namespace BlogProject.Models
         [Display(Name = "Updated Date")]
         public DateTime? Updated { get; set; }
 
-        public bool IsReady { get; set; }
+        public ReadyStatus ReadyStatus { get; set; }
 
         public string Slug { get; set; }
 

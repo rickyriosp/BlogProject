@@ -8,7 +8,6 @@ namespace BlogProject.Models
     public class Blog
     {
         public int Id { get; set; }
-
         public string AuthorId { get; set; }
 
         [Required]

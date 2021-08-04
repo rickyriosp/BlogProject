@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BlogProject.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace BlogProject.Models
 {
@@ -44,7 +41,7 @@ namespace BlogProject.Models
 
         // Navigation properties
         public virtual Post Post { get; set; }
-        public virtual IdentityUser Author { get; set; }
-        public virtual IdentityUser Moderator { get; set; }
+        public virtual BlogUser Author { get; set; }
+        public virtual BlogUser Moderator { get; set; }
     }
 }

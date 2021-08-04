@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -38,7 +37,7 @@ namespace BlogProject.Models
         public IFormFile Image { get; set; }
 
         // Navigation properties
-        public virtual IdentityUser Author { get; set; }
+        public virtual BlogUser Author { get; set; }
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
 
         // If you define your navigation property virtual, Entity Framework will at run time create a new class (dynamic proxy)

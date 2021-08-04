@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BlogProject.Models
 {
@@ -19,6 +14,6 @@ namespace BlogProject.Models
 
         // Navigation properties
         public virtual Post Post { get; set; }
-        public virtual IdentityUser Author { get; set; }
+        public virtual BlogUser Author { get; set; }
     }
 }

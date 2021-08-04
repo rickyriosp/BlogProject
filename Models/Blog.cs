@@ -9,7 +9,7 @@ namespace BlogProject.Models
     public class Blog
     {
         public int Id { get; set; }
-        public string AuthorId { get; set; }
+        public string BlogUserId { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
@@ -30,14 +30,14 @@ namespace BlogProject.Models
         [Display(Name = "Blog Image")]
         public byte[] ImageData { get; set; }
 
-        [Display(Name = "Image Type")]
-        public string ImageType { get; set; }
+        [Display(Name = "Content Type")]
+        public string ContentType { get; set; }
 
         [NotMapped]
         public IFormFile Image { get; set; }
 
         // Navigation properties
-        public virtual BlogUser Author { get; set; }
+        public virtual BlogUser BlogUser { get; set; }
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
 
         // If you define your navigation property virtual, Entity Framework will at run time create a new class (dynamic proxy)

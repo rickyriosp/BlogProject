@@ -20,8 +20,8 @@ namespace BlogProject.Models
         [Display(Name = "Blog Image")]
         public byte[] ImageData { get; set; }
 
-        [Display(Name = "Image Type")]
-        public string ImageType { get; set; }
+        [Display(Name = "Content Type")]
+        public string ContentType { get; set; }
 
         [Display(Name = "Facebook URL")]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and no more than {1} characters", MinimumLength = 2)]

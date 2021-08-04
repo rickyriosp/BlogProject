@@ -40,5 +40,10 @@ namespace BlogProject.Models
         // Navigation properties
         public virtual IdentityUser Author { get; set; }
         public virtual ICollection<Post> Posts { get; set; } = new HashSet<Post>();
+
+        // If you define your navigation property virtual, Entity Framework will at run time create a new class (dynamic proxy)
+        // derived from your class and uses it instead of your original class. This new dynamically created class contains logic
+        // to load the navigation property when accessed for the first time. This is referred to as "lazy loading". It enables 
+        // Entity Framework to avoid loading an entire tree of dependent objects which are not needed from the database.
     }
 }

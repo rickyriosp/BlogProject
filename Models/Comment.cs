@@ -41,6 +41,8 @@ namespace BlogProject.Models
 
         // Navigation properties
         public virtual Post Post { get; set; }
+
+        [Display(Name = "Author")]
         public virtual BlogUser BlogUser { get; set; }
         public virtual BlogUser Moderator { get; set; }
     }

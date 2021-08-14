@@ -10,6 +10,6 @@ namespace BlogProject.Enums
         Administrator,
         Moderator,
         GuestAuthor,
-        User,
+        User
     }
 }

@@ -69,10 +69,14 @@ namespace BlogProject.Services
             };
 
             // Step 2: Interact with the User Manager to create a new User defined by adminUser
-            await _userManager.CreateAsync(adminUser, "password123!");
-
+            // IdentityUser Password needs UpperCase, Number, and Symbol
+            var createdUser = await _userManager.CreateAsync(adminUser, "Password123!");
+            
             // Step 3: Add the new User to the Administrator role
-            await _userManager.AddToRoleAsync(adminUser, BlogRole.Administrator.ToString());
+            if (await _roleManager.RoleExistsAsync(BlogRole.Administrator.ToString()) && createdUser.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(adminUser, BlogRole.Administrator.ToString());
+            }
 
             // Step 1 Repeat: Create a new instance of BlogUser
             var modUser = new BlogUser()
@@ -86,10 +90,14 @@ namespace BlogProject.Services
             };
 
             // Step 2 Repeat: Interact with the User Manager to create a new User defined by modUser
-            await _userManager.CreateAsync(modUser, "password123!");
+            // IdentityUser Password needs UpperCase, Number, and Symbol
+            createdUser = await _userManager.CreateAsync(modUser, "Password123!");
 
             // Step 3 Repeat: Add the new User to the Moderator role
-            await _userManager.AddToRoleAsync(modUser, BlogRole.Moderator.ToString());
+            if (await _roleManager.RoleExistsAsync(BlogRole.Moderator.ToString()) && createdUser.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(modUser, BlogRole.Moderator.ToString());
+            }
         }
     }
 }

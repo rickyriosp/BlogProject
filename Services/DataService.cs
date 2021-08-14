@@ -2,6 +2,7 @@
 using BlogProject.Enums;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,10 +25,13 @@ namespace BlogProject.Services
 
         public async Task ManageDataAsync()
         {
-            // Task 1: Seed a few Roles into the system
+            // Task 1: Create DB from the Migrations
+            await _dbContext.Database.MigrateAsync();
+
+            // Task 2: Seed a few Roles into the system
             await SeedRolesAsync();
 
-            // Task 2: Seed a few Users into the system
+            // Task 3: Seed a few Users into the system
             await SeedUsersAsync();
         }
 
@@ -64,6 +68,7 @@ namespace BlogProject.Services
                 UserName = "ricardo@riosr.com",
                 FirstName = "Ricky",
                 LastName = "Rios",
+                DisplayName = "RickyAdmin",
                 PhoneNumber = "(407) 548-4990",
                 EmailConfirmed = true,
             };
@@ -85,6 +90,7 @@ namespace BlogProject.Services
                 UserName = "ricky@riosr.com",
                 FirstName = "Ricky",
                 LastName = "Rios",
+                DisplayName = "RickyMod",
                 PhoneNumber = "(407) 548-4990",
                 EmailConfirmed = true,
             };

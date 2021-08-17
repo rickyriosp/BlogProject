@@ -7,7 +7,7 @@ namespace BlogProject.ViewModels
 {
     public class MailSettings
     {
-        // Configure and use SMTP server from Google for example
+        // Configure and use an SMTP server: from Google for example
         public string Mail { get; set; }
         public string DisplayName { get; set; }
         public string Password { get; set; }

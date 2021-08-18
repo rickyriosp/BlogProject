@@ -86,8 +86,8 @@ namespace BlogProject.Services
             // Step 1 Repeat: Create a new instance of BlogUser
             var modUser = new BlogUser()
             {
-                Email = "ricky@riosr.com",
-                UserName = "ricky@riosr.com",
+                Email = "riki.rios91@gmail.com",
+                UserName = "riki.rios91@gmail.com",
                 FirstName = "Ricky",
                 LastName = "Rios",
                 DisplayName = "RickyMod",

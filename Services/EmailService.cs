@@ -21,6 +21,7 @@ namespace BlogProject.Services
         {
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
             email.To.Add(MailboxAddress.Parse(_mailSettings.Mail));
             email.Subject = subject;
 
@@ -43,7 +44,7 @@ namespace BlogProject.Services
             var email = new MimeMessage();
 
             email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            //email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
+            email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
             email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = subject;
 

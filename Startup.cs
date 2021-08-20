@@ -56,6 +56,9 @@ namespace BlogProject
 
             // Register my custom IBlogEmailSender interface and implementation
             services.AddScoped<IBlogEmailSender, EmailService>();
+
+            // Register my Image Service
+            services.AddScoped<IImageService, BasicImageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

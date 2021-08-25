@@ -41,11 +41,15 @@ namespace BlogProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Contact(ContactMe model)
         {
-            // This is where we will be emailing
-            model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
-            await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+            if (ModelState.IsValid)
+            {
+                // This is where we will be emailing
+                model.Message = $"{model.Message} <hr/> Phone: {model.Phone}";
+                await _emailSender.SendContactEmailAsync(model.Email, model.Name, model.Subject, model.Message);
+                return RedirectToAction(nameof(Index));
+            }
 
-            return RedirectToAction(nameof(Index));
+            return View(model);
         }
 
         public IActionResult Privacy()

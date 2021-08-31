@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace BlogProject.Controllers
 {
@@ -117,7 +118,7 @@ namespace BlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,ReadyStatus,Image")] Post post)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BlogId,Title,Abstract,Content,ReadyStatus")] Post post, IFormFile newImage)
         {
             if (id != post.Id)
             {
@@ -128,9 +129,32 @@ namespace BlogProject.Controllers
             {
                 try
                 {
-                    post.Updated = DateTime.Now;
+                    var newPost = await _context.Posts.FindAsync(post.Id);
 
-                    _context.Update(post);
+                    newPost.Updated = DateTime.Now;
+
+                    if (newPost.Title != post.Title)
+                    {
+                        newPost.Title = post.Title;
+                    }
+                    if (newPost.Abstract != post.Abstract)
+                    {
+                        newPost.Abstract = post.Abstract;
+                    }
+                    if (newPost.Content != post.Content)
+                    {
+                        newPost.Content = post.Content;
+                    }
+                    if (newPost.ReadyStatus != post.ReadyStatus)
+                    {
+                        newPost.ReadyStatus = post.ReadyStatus;
+                    }
+                    if (newImage is not null)
+                    {
+                        newPost.ImageData = await _imageService.EncodeImageAsync(newImage);
+                        newPost.ContentType = _imageService.ContentType(newImage);
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

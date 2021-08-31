@@ -49,7 +49,7 @@
                 @Html.DisplayFor(modelItem => item.Updated)
             </td>
             <td>
-                <img src="@imageService.DecodeImage(item.ImageData, item.ContentType)" height="80" />
+                <img class="image-fluid" width="200" src="@imageService.DecodeImage(item.ImageData, item.ContentType)" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

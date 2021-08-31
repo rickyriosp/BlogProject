@@ -57,5 +57,12 @@
 </div>
 
 @section Scripts {
+    <script>
+        //Default font size but not for placeholder...
+        $('#Content').summernote({
+            placeholder: "Post Body"
+        });
+    </script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

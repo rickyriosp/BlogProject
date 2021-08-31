@@ -8,6 +8,7 @@ using BlogProject.Models;
 using BlogProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace BlogProject.Controllers
 {
@@ -101,7 +102,7 @@ namespace BlogProject.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Image")] Blog blog)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Blog blog, IFormFile newImage)
         {
             if (id != blog.Id)
             {
@@ -112,7 +113,22 @@ namespace BlogProject.Controllers
             {
                 try
                 {
-                    _context.Update(blog);
+                    var newBlog = await _context.Blogs.FindAsync(blog.Id);
+                    newBlog.Updated = DateTime.Now;
+
+                    if (newBlog.Name != blog.Name)
+                    {
+                        newBlog.Name = blog.Name;
+                    }
+                    if (newBlog.Description != blog.Description)
+                    {
+                        newBlog.Description = blog.Description;
+                    }
+                    if (newImage is not null)
+                    {
+                        newBlog.ImageData = await _imageService.EncodeImageAsync(newImage);
+                    }
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

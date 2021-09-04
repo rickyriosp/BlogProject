@@ -9,6 +9,8 @@ using BlogProject.Data;
 using BlogProject.Models;
 using BlogProject.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogProject.Controllers
 {
@@ -17,12 +19,14 @@ namespace BlogProject.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ISlugService _slugService;
         private readonly IImageService _imageService;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService)
+        public PostsController(ApplicationDbContext context, ISlugService slugService, IImageService imageService, UserManager<BlogUser> userManager)
         {
             _context = context;
             _slugService = slugService;
             _imageService = imageService;
+            _userManager = userManager;
         }
 
         // GET: Posts
@@ -53,6 +57,7 @@ namespace BlogProject.Controllers
         }
 
         // GET: Posts/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name");
@@ -69,6 +74,15 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                post.Created = DateTime.Now;
+
+                var authorId = _userManager.GetUserId(User);
+                post.BlogUserId = authorId;
+
+                // Use the _imageService to store the incoming user specified image
+                post.ImageData = await _imageService.EncodeImageAsync(post.Image);
+                post.ContentType = _imageService.ContentType(post.Image);
+
                 // Create the slug and determine if it is unique
                 var slug = _slugService.UrlFriendly(post.Title);
                 if (!_slugService.IsUnique(slug))
@@ -80,14 +94,21 @@ namespace BlogProject.Controllers
                 }
 
                 post.Slug = slug;
-                post.Created = DateTime.Now;
-
-                // Use the _imageService to store the incoming user specified image
-                post.ImageData = await _imageService.EncodeImageAsync(post.Image);
-                post.ContentType = _imageService.ContentType(post.Image);
 
                 _context.Add(post);
                 await _context.SaveChangesAsync();
+
+                foreach (var tag in tagValues)
+                {
+                    _context.Add(new Tag()
+                    {
+                        PostId = post.Id,
+                        BlogUserId = authorId,
+                        Text = tag,
+                    });
+                }
+                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name", post.BlogId);

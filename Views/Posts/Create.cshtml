@@ -49,10 +49,10 @@
                         </div>
                         <div class="row">
                             <div class="col d-grid">
-                                <button type="button" name="Add" class="btn btn-dark btn-sm">Add</button>
+                                <button onClick="AddTag()" type="button" name="Add" class="btn btn-dark btn-sm">Add</button>
                             </div>
                             <div class="col d-grid">
-                                <button type="button" name="Delete" class="btn btn-dark btn-sm">Delete</button>
+                                <button onClick="DeleteTag()" type="button" name="Delete" class="btn btn-dark btn-sm">Delete</button>
                             </div>
                         </div>
                     </div>
@@ -83,6 +83,8 @@
 </div>
 
 @section Scripts {
+    <script src="~/js/custom.js"></script>
+
     <script>
         //Default font size but not for placeholder...
         $('#Content').summernote({

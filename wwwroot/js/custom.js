@@ -1,5 +1,11 @@
 ﻿let index = 0;
 
+// Look for the tagValues variable to see if it has data
+if (tagValues != '') {
+    let tagArray = tagValues.split(",");
+    index = tagArray.length;
+}
+
 function AddTag() {
     // Get a reference to the TagEntry input element
     let tagEntry = document.getElementById("TagEntry");

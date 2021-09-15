@@ -44,7 +44,7 @@
                     <div class="col">
                         <div class="row mb-2">
                             <div class="col">
-                                <input type="text" class="form-control" id="TagEntry"/>
+                                <input type="text" class="form-control" id="TagEntry" />
                             </div>
                         </div>
                         <div class="row">
@@ -83,14 +83,16 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/custom.js"></script>
-
     <script>
+        let tagValues = '@ViewData["TagValues"]';
+
         //Default font size but not for placeholder...
         $('#Content').summernote({
             placeholder: "Post Body"
         });
     </script>
+
+    <script src="~/js/custom.js"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

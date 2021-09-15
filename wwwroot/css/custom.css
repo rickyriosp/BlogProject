@@ -6,3 +6,12 @@
 option {
     font-weight: bolder;
 }
+
+.swal2popup {
+    outline: 4px solid black;
+    /*border: 2px solid #ff993b;*/
+}
+
+.swal2popup > div.swal2-actions > button {
+    border-radius: 10px;
+}

@@ -1,9 +1,29 @@
 ﻿let index = 0;
 
+// Define custom Sweet Alert object
+const swalWithDarkButton = Swal.mixin({
+    customClass: {
+        popup: "swal2popup",
+        actions: "w-75",
+        confirmButton: 'btn btn-danger d-grid btn-outline-dark w-100',
+    },
+    imageUrl: "/assets/img/oops.png",
+    timer: 3000,
+    confirmButtonText: 'Close',
+    buttonsStyling: false,
+})
+
 // Look for the tagValues variable to see if it has data
 if (tagValues != '') {
     let tagArray = tagValues.split(",");
     index = tagArray.length;
+
+    for (let i = 0; i < tagArray.length; i++) {
+        // Create a new Select Option
+        let newOption = new Option(tagArray[i], tagArray[i]);
+
+        document.getElementById("TagList").options[i] = newOption;
+    }
 }
 
 function AddTag() {
@@ -87,15 +107,3 @@ function Search(str) {
         }
     }
 }
-
-const swalWithDarkButton = Swal.mixin({
-    customClass: {
-        popup: "swal2popup",
-        actions: "w-75",
-        confirmButton: 'btn btn-danger d-grid btn-outline-dark w-100',
-    },
-    imageUrl: "/assets/img/oops.png",
-    timer: 3000,
-    confirmButtonText: 'Close',
-    buttonsStyling: false,
-})

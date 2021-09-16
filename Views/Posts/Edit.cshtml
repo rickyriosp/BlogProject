@@ -11,7 +11,7 @@
 <h4>Post</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-lg-8 col-md-10 mx-auto">
         <form id="Form" asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
@@ -58,12 +58,7 @@
                         </div>
                     </div>
                     <div class="col d-grid">
-                        <select class="form-select" name="TagValues" id="TagList" multiple>
-                            @foreach (var tag in ViewBag.TagValues.Split(","))
-                            {
-                                <option value="@tag">@tag</option>
-                            }
-                        </select>
+                        <select class="form-select" name="TagValues" id="TagList" multiple></select>
                     </div>
                 </div>
             </div>

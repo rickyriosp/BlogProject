@@ -13,36 +13,36 @@
             <!-- Contact Form - Enter your credentials in the field MailSettings on the appsettings.json file to make this form work. -->
             <!-- WARNING: Some web hosts do not allow emails to be sent through forms to common mail hosts like Gmail or Yahoo. It's recommended that you use a private domain email address! -->
             <form asp-action="Contact">
-                <div class="control-group">
-                    <div class="form-group floating-label-form-group controls">
+                <div class="control-group mb-3">
+                    <div class="form-group form-floating">
+                        <input asp-for="Name" type="text" class="form-control" placeholder="Name" />
                         <label asp-for="Name" class="control-label"></label>
-                        <input asp-for="Name" type="text" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="form-group floating-label-form-group controls">
+                <div class="control-group mb-3">
+                    <div class="form-group form-floating">
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
                         <label asp-for="Email" class="control-label"></label>
-                        <input asp-for="Email" type="email" class="form-control" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="form-group col-xs-12 floating-label-form-group controls">
+                <div class="control-group mb-3">
+                    <div class="form-group col-xs-12 form-floating">
+                        <input asp-for="Phone" type="tel" class="form-control" placeholder="Phone" />
                         <label asp-for="Phone" class="control-label"></label>
-                        <input asp-for="Phone" type="tel" class="form-control" />
                         <span asp-validation-for="Phone" class="text-danger"></span>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="form-group col-xs-12 floating-label-form-group controls">
+                <div class="control-group mb-3">
+                    <div class="form-group col-xs-12 form-floating">
+                        <input asp-for="Subject" type="text" class="form-control" placeholder="Subject" />
                         <label asp-for="Subject" class="control-label"></label>
-                        <input asp-for="Subject" type="text" class="form-control" />
                         <span asp-validation-for="Subject" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="control-group">
-                    <div class="form-group floating-label-form-group controls">
+                    <div class="form-group">
                         <label asp-for="Message" class="control-label"></label>
                         <textarea asp-for="Message" rows="5" class="form-control"></textarea>
                         <span asp-validation-for="Message" class="text-danger"></span>

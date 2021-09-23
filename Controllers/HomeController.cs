@@ -32,29 +32,13 @@ namespace BlogProject.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 5;
 
-            //var blogs = _context.Blogs.Where(
-            //    b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.PreviewReady))
-            //    .OrderByDescending(b => b.Created)
-            //    .ToPagedListAsync(pageNumber, pageSize);
-
             var blogs = _context.Blogs
+                .Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))
                 .Include(b => b.BlogUser)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
             return View(await blogs);
-        }
-
-        public async Task<IActionResult> BlogPostIndex(int? id)
-        {
-            if (id is null)
-            {
-                return NotFound();
-            }
-
-            var posts = _context.Posts.Where(p => p.BlogId == id).ToList();
-
-            return View("Index", posts);
         }
 
         public IActionResult About()

@@ -11,6 +11,7 @@ using BlogProject.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using X.PagedList;
 
 namespace BlogProject.Controllers
 {
@@ -34,6 +35,25 @@ namespace BlogProject.Controllers
         {
             var applicationDbContext = _context.Posts.Include(p => p.Blog).Include(p => p.BlogUser);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        public async Task<IActionResult> BlogPostIndex(int? id, int? page)
+        {
+            if (id is null)
+            {
+                return NotFound();
+            }
+
+            var pageNumber = page ?? 1;
+            var pageSize = 5;
+
+            var posts = _context.Posts
+                .Where(p => p.BlogId == id)
+                .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
+                .OrderByDescending(p => p.Created)
+                .ToPagedListAsync(pageNumber, pageSize);
+
+            return View(await posts);
         }
 
         // GET: Posts/Details/5
@@ -179,6 +199,10 @@ namespace BlogProject.Controllers
 
                     newPost.Updated = DateTime.Now;
 
+                    if (newPost.BlogId != post.BlogId)
+                    {
+                        newPost.BlogId = post.BlogId;
+                    }
                     if (newPost.Title != post.Title)
                     {
                         var newSlug = _slugService.UrlFriendly(post.Title);

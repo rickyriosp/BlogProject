@@ -92,7 +92,7 @@ namespace BlogProject.Controllers
         }
 
         // GET: Posts/Create
-        [Authorize]
+        [Authorize(Roles = "Administrator, GuestAuthor")]
         public IActionResult Create()
         {
             ViewData["BlogId"] = new SelectList(_context.Blogs, "Id", "Name");

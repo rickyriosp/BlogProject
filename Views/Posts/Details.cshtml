@@ -1,4 +1,8 @@
-﻿@model BlogProject.Models.Post
+﻿@using BlogProject.Services
+
+@inject IImageService imageService
+
+@model BlogProject.Models.Post
 
 @{
     ViewData["Title"] = "Details";
@@ -35,13 +39,13 @@
 
 <hr />
 
-<!-- Displaying Comments related to this Post -->
-<!-- Display the image of the Comment's Author -->
+<!-- Comment input area -->
 <div>
     @if (User.Identity.IsAuthenticated)
     {
         <form asp-controller="Comments" asp-action="Create" method="post">
             @Html.Hidden("PostId", Model.Id)
+            @Html.Hidden("Slug", Model.Slug)
 
             <div class="form-group">
                 <label class="h2 custom-control-label font-weight-bold">Add Comment</label>
@@ -55,8 +59,28 @@
     }
     else
     {
-        <div class="d-grid">
+        <div class="d-grid mt-3 mb-2">
             <a class="btn btn-dark btn-sm" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="/BlogPosts/UrlFriendly/@Model.Slug">Login to add comment</a>
         </div>
     }
 </div>
+
+<!-- Displaying Comments related to this Post -->
+<!-- Display the image of the Comment's Author -->
+<div class="d-grid mb-2">
+    <span class="btn btn-dark btn-sm">@Model.Comments.Count COMENT(S)</span>
+</div>
+
+@foreach (var comment in Model.Comments)
+{
+    <div class="d-flex p-0 mb-2 bg-light">
+        <div class="flex-shrink-0">
+            <img class="mr-3 mt-3 rounded-circle" style="width:60px;" src="@imageService.DecodeImage(comment.BlogUser.ImageData, comment.BlogUser.ContentType)" />
+        </div>
+        <div class="flex-grow-1">
+            <h4>@comment.BlogUser.FullName</h4>
+            <small><i>Posted on @comment.Created.ToString("MMM dd, yyyy")</i></small>
+            <p class="my-2">@comment.Body</p>
+        </div>
+    </div>
+}

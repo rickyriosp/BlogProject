@@ -25,9 +25,9 @@
     </div>
     <div class="row">
         <div class="col text-center">
-            @foreach(var tag in Model.Tags)
+            @foreach (var tag in Model.Tags)
             {
-                <a class="btn btn-warning btn-sm btn-outline-dark"asp-action="TagIndex" asp-route-tag="@tag.Text.ToLower()">#@tag.Text</a>
+                <a class="btn btn-warning btn-sm btn-outline-dark" asp-action="TagIndex" asp-route-tag="@tag.Text.ToLower()">#@tag.Text</a>
             }
         </div>
     </div>
@@ -36,4 +36,27 @@
 <hr />
 
 <!-- Displaying Comments related to this Post -->
-<!-- Display the image fo the Comment's Author -->
+<!-- Display the image of the Comment's Author -->
+<div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form asp-controller="Comments" asp-action="Create" method="post">
+            @Html.Hidden("PostId", Model.Id)
+
+            <div class="form-group">
+                <label class="h2 custom-control-label font-weight-bold">Add Comment</label>
+                <textarea name="body" class="form-control" rows="10"></textarea>
+            </div>
+
+            <div class="d-grid mt-3 mb-2">
+                <button type="submit" class="btn btn-dark btn-sm">Submit</button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="d-grid">
+            <a class="btn btn-dark btn-sm" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="/BlogPosts/UrlFriendly/@Model.Slug">Login to add comment</a>
+        </div>
+    }
+</div>

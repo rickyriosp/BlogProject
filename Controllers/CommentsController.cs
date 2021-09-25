@@ -7,24 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlogProject.Controllers
 {
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(ApplicationDbContext context, UserManager<BlogUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-
-        // GET: Comments
-        //public async Task<IActionResult> Index()
-        //{
-        //    var applicationDbContext = _context.Comments.Include(c => c.BlogUser).Include(c => c.Moderator).Include(c => c.Post);
-        //    return View(await applicationDbContext.ToListAsync());
-        //}
 
         // GET: Comments
         public async Task<IActionResult> OriginalIndex()
@@ -47,30 +43,24 @@ namespace BlogProject.Controllers
             return View("Index", deletedComments);
         }
 
-        // GET: Comments/Create
-        //public IActionResult Create()
-        //{
-        //    ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id");
-        //    ViewData["ModeratorId"] = new SelectList(_context.Users, "Id", "Id");
-        //    ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Title");
-        //    return View();
-        //}
-
         // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PostId,BlogUserId,ModeratorId,Body,Created,Updated,Moderated,Deleted,ModeratedBody,ModerationType")] Comment comment)
+        public async Task<IActionResult> Create([Bind("PostId,Body,")] Comment comment, string postId)
         {
             if (ModelState.IsValid)
             {
+                comment.BlogUserId = _userManager.GetUserId(User);
+                comment.Created = DateTime.Now;
+
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(comment);
+            return RedirectToRoute($"Posts/Details/{postId}");
         }
 
         // GET: Comments/Edit/5

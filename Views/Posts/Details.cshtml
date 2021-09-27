@@ -101,7 +101,11 @@
                 </i>
             </small>
 
-            @if (comment.Moderated is not null)
+            @if (string.IsNullOrEmpty(comment.Body))
+            {
+                <p class="my-2">Invalid comment body</p>
+            }
+            else if (comment.Moderated is not null)
             {
                 <p class="my-2">@comment.ModeratedBody</p>
             }
@@ -110,7 +114,7 @@
                 <p class="my-2">@comment.Body</p>
             }
 
-            <!-- Render the Edit, Moderate and Delete buttons-->
+            <!-- Render the Edit, Moderate and Delete buttons -->
             @if (User.IsInRole("Moderator"))
             {
                 <hr />
@@ -121,6 +125,7 @@
                     <div class="col-2">
                         <form asp-controller="Comments" asp-action="Delete">
                             @Html.Hidden("Id", comment.Id)
+                            @Html.Hidden("Slug", comment.Post.Slug)
 
                             <div class="d-grid">
                                 <button class="btn btn-dark btn-sm font-weight-bold">DELETE</button>

@@ -25,6 +25,21 @@
     padding-top: 18px !important;
 }
 
+#mainNav .navbar-nav > li.nav-item > form > button.nav-link {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.0625em;
+    text-transform: uppercase;
+}
+
+#mainNav .navbar-nav > li.nav-item > form > button.nav-link {
+    color: #fff;
+}
+
+#mainNav.is-fixed .navbar-nav > li.nav-item > form > button {
+    color: #212529;
+}
+
 /* CUSTOM MEDIA OBJECT BORDER */
 .media-border {
     border: 2px solid black;

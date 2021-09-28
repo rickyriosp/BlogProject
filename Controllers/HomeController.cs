@@ -38,6 +38,10 @@ namespace BlogProject.Controllers
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
 
+            ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";
+            ViewData["MainText"] = "Ricky's Blog";
+            ViewData["SubText"] = "This is my blog";
+
             return View(await blogs);
         }
 

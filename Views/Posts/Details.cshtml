@@ -1,22 +1,39 @@
-﻿@using BlogProject.Services
-@using Microsoft.AspNetCore.Identity
+﻿@using BlogProject.Models
+@using BlogProject.Services
 @using BlogProject.Enums
+@using BlogProject.ViewModels
+@using Microsoft.AspNetCore.Identity
 
 @inject IImageService imageService
 @inject UserManager<BlogUser> userManager
 
-@model BlogProject.Models.Post
+@model PostDetailView
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Post Details Page";
 }
 
 <!-- Post Content-->
-<article class="mb-4">
-    <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                @Html.Raw(Model.Content)
+<article>
+    <div class="row">
+        <div class="col-9 border-end">
+            @Html.Raw(Model.Post.Content)
+        </div>
+
+        <div class="col-3 text-center font-weight-bold h6">
+            <div class="card">
+                <img class="card-img-top" src="~/assets/img/tags.png" alt="Tags..." />
+                <div class="card-body">
+                    <h4 class="card-title">SYSTEM TAGS</h4>
+                    <div class="tagView">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <a asp-action="TagIndex" asp-route-tag="@tag" class="mb-1 btn btn-warning btn-sm btn-outline-dark">
+                                @tag.ToUpper()
+                            </a>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -25,16 +42,14 @@
 <hr />
 
 <article>
-    <div class="row">
-        <div class="col text-center font-weight-bold h3">
-            Custom Post Tags
-        </div>
-    </div>
+    <h3 class="text-center font-weight-bold">Tags</h3>
     <div class="row">
         <div class="col text-center">
             @foreach (var tag in Model.Tags)
             {
-                <a class="btn btn-warning btn-sm btn-outline-dark" asp-action="TagIndex" asp-route-tag="@tag.Text.ToLower()">#@tag.Text</a>
+            <a asp-action="TagIndex" asp-route-tag="@tag" class="btn btn-warning btn-sm btn-outline-dark mb-1">
+                #@tag.ToUpper()
+            </a>
             }
         </div>
     </div>
@@ -47,8 +62,8 @@
     @if (User.Identity.IsAuthenticated)
     {
         <form asp-controller="Comments" asp-action="Create" method="post">
-            @Html.Hidden("PostId", Model.Id)
-            @Html.Hidden("Slug", Model.Slug)
+            @Html.Hidden("PostId", Model.Post.Id)
+            @Html.Hidden("Slug", Model.Post.Slug)
 
             <div class="form-group">
                 <label class="h2 custom-control-label font-weight-bold">Add Comment</label>
@@ -63,18 +78,24 @@
     else
     {
         <div class="d-grid mt-3 mb-2">
-            <a class="btn btn-dark btn-sm" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="/BlogPosts/UrlFriendly/@Model.Slug">Login to add comment</a>
+            <a class="btn btn-dark btn-sm" asp-area="Identity" asp-page="/Account/Login" asp-route-ReturnUrl="/BlogPosts/UrlFriendly/@Model.Post.Slug">
+                Login to add comment
+            </a>
         </div>
     }
 </div>
 
+<br />
+<hr class="card-hr" />
+<br />
+
 <!-- Displaying Comments related to this Post -->
 <!-- Display the image of the Comment's Author -->
 <div id="commentSection" class="d-grid mb-2">
-    <span class="btn btn-dark btn-sm">@Model.Comments.Count COMENT(S)</span>
+    <span class="btn btn-dark btn-sm">@Model.Post.Comments.Count COMENT(S)</span>
 </div>
 
-@foreach (var comment in Model.Comments)
+@foreach (var comment in Model.Post.Comments.OrderByDescending(c => c.Created))
 {
     <div class="d-flex p-2 mb-2 bg-light">
         <div class="flex-shrink-0">
@@ -82,28 +103,52 @@
         </div>
         <div class="flex-grow-1">
             <h4>@comment.BlogUser.FullName</h4>
-            <small>
-                <i>
-                    @if (comment.Moderated is not null)
-                    {
-                        <span class="small">
-                            <span class="font-weight-bolder">
-                                Moderated
-                                <span class="text-danger font-italic">(@comment.ModerationType.ToString().ToLower())</span>
-                            </span>
-                            : @comment.Moderated?.ToString("MMM dd, yyyy")
-                        </span>
-                    }
-                    else
-                    {
-                        <span>Posted : @comment.Created.ToString("MMM dd, yyyy")</span>
-                    }
-                </i>
-            </small>
 
+            <!-- Post On or Updated On-->
+            @if (comment.Moderated is not null)
+            {
+                <span class="fs-6">
+                    <span class="fw-bolder">
+                        Moderated
+                        <span class="text-danger fst-italic">(@comment.ModerationType.ToString().ToLower())</span>
+                    </span>
+                    : @comment.Moderated?.ToString("MMM dd, yyyy")
+                </span>
+            }
+            else if (comment.Updated is not null)
+            {
+                <span class="fs-6">
+                    <span class="fw-bolder">Updated</span> : @comment.Updated?.ToString("MMM dd, yyyy")
+                </span>
+            }
+            else
+            {
+                <span class="fs-6">
+                    <span class="fw-bolder">Posted</span> : @comment.Created.ToString("MMM dd, yyyy")
+                </span>
+            }
+
+            <!-- Render pre text -->
+            <br />
+            @if (comment.Deleted is not null)
+            {
+                <span class="fs-6 fst-italic">
+                    The comment posted on @comment.Created.ToString("MMM dd, yyyy") by @comment.BlogUser.FullName was deleted by the Moderator...
+                </span>
+            }
+            else if (comment.Moderated is not null)
+            {
+                <span class="fs-6 fst-italic">
+                    The comment posted on @comment.Created.ToString("MMM dd, yyyy") by @comment.BlogUser.FullName has been Moderated...
+                </span>
+            }
+
+            <hr />
+
+            <!-- Render the main body -->
             @if (string.IsNullOrEmpty(comment.Body))
             {
-                <p class="my-2">Invalid comment body</p>
+                <span class="my-2 small font-italic">Comment not available...</span>
             }
             else if (comment.Moderated is not null)
             {
@@ -148,7 +193,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Editing Comment ...</h4>
+                    <h4 class="modal-title">Editing Comment...</h4>
                 </div>
 
                 <!-- Modal body -->

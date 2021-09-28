@@ -49,11 +49,18 @@ namespace BlogProject.Controllers
             var pageNumber = page ?? 1;
             var pageSize = 5;
 
+            var blog = _context.Blogs.Find(id);
+
             var posts = _context.Posts
                 .Where(p => p.BlogId == id)
                 .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
+                .Include(p => p.Blog)
                 .OrderByDescending(p => p.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
+
+            ViewData["HeaderImage"] = _imageService.DecodeImage(blog.ImageData, blog.ContentType);
+            ViewData["MainText"] = blog.Name;
+            ViewData["SubText"] = blog.Description;
 
             return View(await posts);
         }
@@ -84,13 +91,28 @@ namespace BlogProject.Controllers
                 .Include(p => p.Tags)
                 .Include(p => p.Comments)
                 .ThenInclude(c => c.BlogUser)
+                .Include(p => p.Comments)
+                .ThenInclude(c => c.Moderator)
                 .FirstOrDefaultAsync(m => m.Slug == slug);
+
             if (post == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            var dataVM = new ViewModels.PostDetailView()
+            {
+                Post = post,
+                Tags = _context.Tags
+                        .Select(t => t.Text.ToLower())
+                        .Distinct().ToList()
+            };
+
+            ViewData["HeaderImage"] = _imageService.DecodeImage(post.ImageData, post.ContentType);
+            ViewData["MainText"] = post.Title;
+            ViewData["SubText"] = post.Abstract;
+
+            return View(dataVM);
         }
 
         // GET: Posts/Create

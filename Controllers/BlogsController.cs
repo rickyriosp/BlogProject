@@ -9,6 +9,8 @@ using BlogProject.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogProject.Controllers
 {
@@ -17,12 +19,14 @@ namespace BlogProject.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
         private readonly UserManager<BlogUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public BlogsController(ApplicationDbContext context, IImageService imageService, UserManager<BlogUser> userManager)
+        public BlogsController(ApplicationDbContext context, IImageService imageService, UserManager<BlogUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _imageService = imageService;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         // GET: Blogs
@@ -69,8 +73,13 @@ namespace BlogProject.Controllers
             {
                 blog.Created = DateTime.Now;
                 blog.BlogUserId = _userManager.GetUserId(User);
-                blog.ImageData = await _imageService.EncodeImageAsync(blog.Image);
-                blog.ContentType = _imageService.ContentType(blog.Image);
+
+                // Use the _imageService to store the incoming user specified image
+                blog.ImageData = (await _imageService.EncodeImageAsync(blog.Image) ??
+                                  await _imageService.EncodeImageAsync(_configuration["DefaultBlogImage"]));
+                blog.ContentType = blog.Image is null ?
+                                    Path.GetExtension(_configuration["DefaultBlogImage"]) :
+                                    _imageService.ContentType(blog.Image);
 
                 _context.Add(blog);
                 await _context.SaveChangesAsync();

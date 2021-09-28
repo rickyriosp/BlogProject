@@ -1,59 +1,72 @@
-﻿@using BlogProject.Services
-@using BlogProject.Models
+﻿@using BlogProject.Models
+@using BlogProject.Services
+@using BlogProject.Enums
+@using Microsoft.AspNetCore.Identity
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Web.Common
 
 @inject IImageService imageService
+@inject UserManager<BlogUser> userManager
 
 @model IPagedList<Post>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Blog Index";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Image
-            </th>
-            <th>
-                Title
-            </th>
-            <th>
-                Abstract
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<!-- Main Content-->
+<div class="row">
+    @foreach (var post in Model)
+    {
+        // Is the logged in user the Author of this post?
+        var isAuthor = false;
+        if (User.Identity.IsAuthenticated)
         {
-            <tr>
-                <td>
-                    <img src="@imageService.DecodeImage(item.ImageData, item.ContentType)" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Abstract)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-slug="@item.Slug">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+            isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
+            isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
         }
-    </tbody>
-</table>
+
+        <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
+            <div class="card border-dark h-100">
+                <div class="card-body text-center d-flex flex-column">
+                    <div>
+                        <div class="bg-warning">
+                            <hr class="card-hr" />
+                            <h5 class="card-title">@post.Title</h5>
+                            <hr class="card-hr" />
+                        </div>
+
+                        <p class="card-text cftooltip">
+                            @post.Abstract
+                        </p>
+
+                        <span></span>
+                    </div>
+
+                    <div class="text-center d-grid mt-auto">
+                        <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug">
+                            Read More
+                        </a>
+                    </div>
+
+                    @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
+                    {
+                        <div class="text-center d-grid">
+                            <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">
+                                Edit Post
+                            </a>
+                        </div>
+                    }
+                </div>
+                
+                <img class="card-img-bottom" src="@imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card Image" />
+            </div>
+        </div>
+    }
+</div>
+
+<hr />
 
 <!-- Add Paging controls here -->
 <div class="row">

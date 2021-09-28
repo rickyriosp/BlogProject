@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using BlogProject.Enums 
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -36,7 +38,7 @@
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="About">About</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Posts" asp-action="Details">Sample Post</a></li>
                     <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    @if (User.IsInRole("Administrator") || User.IsInRole("GuestAuthor"))
+                    @if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
                     {
                         <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a></li>
                     }

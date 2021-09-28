@@ -115,7 +115,7 @@
             }
 
             <!-- Render the Edit, Moderate and Delete buttons -->
-            @if (User.IsInRole("Moderator"))
+            @if (User.IsInRole(BlogRole.Moderator.ToString()))
             {
                 <hr />
                 <div class="row d-flex">

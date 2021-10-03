@@ -8,7 +8,7 @@ namespace BlogProject.Data
     {
         public static string GetConnectionString(IConfiguration configuration)
         {
-            return "postgres://omwtdsqxdeqzcm:662ee77a5d646a16cb9ec01f2660c68de70f03c876de25a2484f8374e28e3cac@ec2-44-199-26-122.compute-1.amazonaws.com:5432/d1q9uliav4qs58";
+            return BuildConnectionString("postgres://omwtdsqxdeqzcm:662ee77a5d646a16cb9ec01f2660c68de70f03c876de25a2484f8374e28e3cac@ec2-44-199-26-122.compute-1.amazonaws.com:5432/d1q9uliav4qs58");
             //var connectionString = configuration.GetConnectionString("DefaultConnection");
             //var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
             //return string.IsNullOrWhiteSpace(databaseUrl) ? connectionString : BuildConnectionString(databaseUrl);

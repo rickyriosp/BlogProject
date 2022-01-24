@@ -42,9 +42,9 @@ namespace BlogProject.Controllers
             if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
             {
                 blogs = _context.Blogs
-                .Include(b => b.BlogUser)
-                .OrderByDescending(b => b.Created)
-                .ToPagedListAsync(pageNumber, pageSize);
+                    .Include(b => b.BlogUser)
+                    .OrderByDescending(b => b.Created)
+                    .ToPagedListAsync(pageNumber, pageSize);
             }
 
             ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";

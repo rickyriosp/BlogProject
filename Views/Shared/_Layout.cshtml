@@ -87,9 +87,6 @@
 					<li class="nav-item">
 					    <a class="nav-link" href="blog-post.html"><i class="fas fa-bookmark fa-fw me-2"></i>Blog Post</a>
 					</li>
-					<li class="nav-item">
-					    <a class="nav-link" href="https://riosr.com" target="_blank"><i class="fas fa-user fa-fw me-2"></i>About Me</a>
-					</li>
                     @if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
                     {
                         <li class="nav-item"><a class="nav-link" asp-controller="Blogs" asp-action="Create"><i class="fas fa-blog fa-fw me-2"></i>Create Blog</a></li>
@@ -99,6 +96,9 @@
                         <li class="nav-item"><a class="nav-link" asp-controller="Posts" asp-action="Create"><i class="fas fa-sticky-note fa-fw me-2"></i>Create Post</a></li>
                     }
                     <partial name="_LoginPartial" />
+					<li class="nav-item">
+					    <a class="nav-link" href="https://riosr.com" target="_blank"><i class="fas fa-user fa-fw me-2"></i>About Me</a>
+					</li>
 				</ul>
                 <!-- end navigation links -->
 				

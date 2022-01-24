@@ -6,61 +6,57 @@
     ViewData["Title"] = "Contact";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-            <p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>
-            <!-- Contact Form - Enter your credentials in the field MailSettings on the appsettings.json file to make this form work. -->
-            <!-- WARNING: Some web hosts do not allow emails to be sent through forms to common mail hosts like Gmail or Yahoo. It's recommended that you use a private domain email address! -->
-            <form asp-action="Contact">
-                <div class="control-group mb-3">
-                    <div class="form-group form-floating">
-                        <input asp-for="Name" type="text" class="form-control" placeholder="Name" />
-                        <label asp-for="Name" class="control-label"></label>
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+<!-- contact-section -->
+<section id="contact" class="contact-section px-3 py-5 p-md-6">
+    <!-- container -->
+    <div class="container">
+        <!-- Contact Form - Enter your credentials in the field MailSettings on the appsettings.json file to make this form work. -->
+        <!-- WARNING: Some web hosts do not allow emails to be sent through forms to common mail hosts like Gmail or Yahoo. It's recommended that you use a private domain email address! -->
+        <form id="contact-form" class="contact-form col-lg-10 mx-lg-auto" method="post" asp-action="Contact">
+            <h3 class="text-center mb-3">Get In Touch</h3>
+            <!-- form-row -->
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Name" class="sr-only control-label">Name</label>
+                    <input asp-for="Name" type="text" class="form-control" placeholder="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
-                <div class="control-group mb-3">
-                    <div class="form-group form-floating">
-                        <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
-                        <label asp-for="Email" class="control-label"></label>
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="Email" class="sr-only control-label"></label>
+                    <input asp-for="Email" type="email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-                <div class="control-group mb-3">
-                    <div class="form-group col-xs-12 form-floating">
-                        <input asp-for="Phone" type="tel" class="form-control" placeholder="Phone" />
-                        <label asp-for="Phone" class="control-label"></label>
-                        <span asp-validation-for="Phone" class="text-danger"></span>
-                    </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="Phone" class="sr-only control-label"></label>
+                    <input asp-for="Phone" type="tel" class="form-control" placeholder="Phone" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
-                <div class="control-group mb-3">
-                    <div class="form-group col-xs-12 form-floating">
-                        <input asp-for="Subject" type="text" class="form-control" placeholder="Subject" />
-                        <label asp-for="Subject" class="control-label"></label>
-                        <span asp-validation-for="Subject" class="text-danger"></span>
-                    </div>
+                <div class="col-12">
+                    <label asp-for="Subject" class="sr-only control-label"></label>
+                    <input asp-for="Subject" type="text" class="form-control" placeholder="Subject" />
+                    <span asp-validation-for="Subject" class="text-danger"></span>
                 </div>
-                <div class="control-group">
-                    <div class="form-group">
-                        <label asp-for="Message" class="control-label"></label>
-                        <textarea asp-for="Message" rows="5" class="form-control"></textarea>
-                        <span asp-validation-for="Message" class="text-danger"></span>
-                    </div>
+                <div class="col-12">
+                    <label asp-for="Message" class="sr-only control-label"></label>
+                    <textarea asp-for="Message" rows="10" class="form-control"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
                 </div>
-                <br>
-                <div id="success"></div>
-                <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
-            </form>
-        </div>
+                <!-- Google reCAPTCHA block -->
+                <div class="col-12 form-group g-recaptcha" data-sitekey="6Lfu3bIbAAAAAN0sLBxYb8R432dBxLqSJH6qt8nM"></div>
+                <div class="form-group col-12">
+                    <button type="submit" id="sendMessageButton" class="btn btn-block btn-primary py-2">Send Now</button>
+                </div>
+            </div>
+        </form>
     </div>
-</div>
+</section>
 
 @section Scripts{
     <script>
         //Default font size but not for placeholder...
         $('#Message').summernote({
-            placeholder: "Message"
+            placeholder: "Message",
+            height: 200,
         });
     </script>
 

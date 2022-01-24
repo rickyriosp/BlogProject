@@ -94,6 +94,10 @@
                     {
                         <li class="nav-item"><a class="nav-link" asp-controller="Blogs" asp-action="Create"><i class="fas fa-blog fa-fw me-2"></i>Create Blog</a></li>
                     }
+                    @if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Posts" asp-action="Create"><i class="fas fa-sticky-note fa-fw me-2"></i>Create Post</a></li>
+                    }
                     <partial name="_LoginPartial" />
 				</ul>
                 <!-- end navigation links -->
@@ -110,8 +114,9 @@
         <!-- Page Header -->
         <section class="cta-section theme-bg-light py-5">
             <div class="container text-center single-col-max-width">
-                <h2 class="heading">@ViewData["MainText"]</h2>
-                <div class="intro">@ViewData["SubText"]</div>
+                @*<h2 class="heading">@ViewData["MainText"]</h2>
+                <div class="intro">@ViewData["SubText"]</div>*@
+                <h2 class="heading">Looking for a specific article?</h2>
 
                 <!-- search form -->
                 <div class="single-form-max-width pt-3 mx-auto">

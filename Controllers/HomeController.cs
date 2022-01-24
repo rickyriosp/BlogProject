@@ -1,4 +1,5 @@
 ﻿using BlogProject.Data;
+using BlogProject.Enums;
 using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.ViewModels;
@@ -33,10 +34,18 @@ namespace BlogProject.Controllers
             var pageSize = 5;
 
             var blogs = _context.Blogs
-                .Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))
+               .Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))
+               .Include(b => b.BlogUser)
+               .OrderByDescending(b => b.Created)
+               .ToPagedListAsync(pageNumber, pageSize);
+
+            if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
+            {
+                blogs = _context.Blogs
                 .Include(b => b.BlogUser)
                 .OrderByDescending(b => b.Created)
                 .ToPagedListAsync(pageNumber, pageSize);
+            }
 
             ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";
             ViewData["MainText"] = "Ricky's Blog";

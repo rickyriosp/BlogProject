@@ -2,7 +2,7 @@
 using Npgsql;
 using System;
 
-namespace BlogProject.Data
+namespace BlogProject.Services
 {
     public class ConnectionService
     {

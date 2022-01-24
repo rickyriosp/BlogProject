@@ -53,7 +53,7 @@ namespace BlogProject.Controllers
             if (ModelState.IsValid)
             {
                 comment.BlogUserId = _userManager.GetUserId(User);
-                comment.Created = DateTime.Now;
+                comment.Created = DateTime.Now.ToUniversalTime();
 
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
@@ -102,7 +102,7 @@ namespace BlogProject.Controllers
                 try
                 {
                     newComment.Body = comment.Body;
-                    newComment.Updated = DateTime.Now;
+                    newComment.Updated = DateTime.Now.ToUniversalTime();
 
                     await _context.SaveChangesAsync();
                 }
@@ -145,7 +145,7 @@ namespace BlogProject.Controllers
                     newComment.ModeratedBody = comment.ModeratedBody;
                     newComment.ModerationType = comment.ModerationType;
 
-                    newComment.Moderated = DateTime.Now;
+                    newComment.Moderated = DateTime.Now.ToUniversalTime();
                     newComment.ModeratorId = _userManager.GetUserId(User);
 
                     await _context.SaveChangesAsync();

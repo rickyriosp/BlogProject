@@ -44,30 +44,7 @@
     @*<link href="~/css/custom.css" rel="stylesheet" />*@
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Start Bootstrap</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="About">About</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Posts" asp-action="Details">Sample Post</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    @if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
-                    {
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a></li>
-                    }
-                    <partial name="_LoginPartial" />
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    
     <!-- Page Header -->
     <header class="masthead" style="background-image: url(@ViewData["HeaderImage"]); height: 835px;">
         <div class="container position-relative px-4 px-lg-5">
@@ -89,7 +66,7 @@
         </div>
     </header>
 
-    <!-- Page Header / Sidebar -->
+    <!-- Sidebar -->
     <header class="header text-center">	    
 	    <h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" asp-action="Index">Ricky's Blog</a></h1>
         
@@ -121,6 +98,7 @@
 				</div>
                 <!-- end profile section -->
 				
+                <!-- navigation links -->
 				<ul class="navbar-nav flex-column text-start">
 					<li class="nav-item">
 					    <a class="nav-link active" asp-controller="Home" asp-action="Index"><i class="fas fa-home fa-fw me-2"></i>Home <span class="sr-only">(current)</span></a>
@@ -137,6 +115,7 @@
                     }
                     <partial name="_LoginPartial" />
 				</ul>
+                <!-- end navigation links -->
 				
 				<div class="my-2 my-md-3">
 				    <a class="btn btn-primary" asp-controller="Home" asp-action="Contact">Get in Touch</a>

@@ -137,7 +137,7 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                post.Created = DateTime.Now;
+                post.Created = DateTime.Now.ToUniversalTime();
 
                 var authorId = _userManager.GetUserId(User);
                 post.BlogUserId = authorId;
@@ -242,7 +242,7 @@ namespace BlogProject.Controllers
                         .Include(p => p.Tags)
                         .FirstOrDefaultAsync(p => p.Id == post.Id);
 
-                    newPost.Updated = DateTime.Now;
+                    newPost.Updated = DateTime.Now.ToUniversalTime();
 
                     if (newPost.BlogId != post.BlogId)
                     {

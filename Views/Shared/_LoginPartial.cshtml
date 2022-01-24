@@ -2,25 +2,24 @@
 @inject SignInManager<BlogUser> SignInManager
 @inject UserManager<BlogUser> UserManager
 
-@*<ul class="navbar-nav py-4 py-lg-0">*@
+
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a class="nav-link px-lg-3 py-3 py-lg-4" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index"><i class="fas fa-user-cog fa-fw me-2"></i>@User.Identity.Name</a>
     </li>
     <li class="nav-item">
         <form  class="d-flex" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="btn btn-link nav-link px-lg-3 py-3 py-lg-4">Logout</button>
+            <button type="submit" class="btn btn-link nav-link"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Logout</button>
         </form>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link px-lg-3 py-3 py-lg-4" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Register"><i class="fas fa-user-plus fa-fw me-2"></i>Register</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link px-lg-3 py-3 py-lg-4" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login"><i class="fas fa-sign-in-alt fa-fw me-2"></i>Login</a>
     </li>
 }
-@*</ul>*@

@@ -63,6 +63,7 @@ namespace BlogProject.Controllers
                 posts = await _context.Posts
                     .Where(p => p.BlogId == id)
                     .Include(p => p.Blog)
+                    .Include(p => p.Comments)
                     .OrderByDescending(p => p.Created)
                     .ToPagedListAsync(pageNumber, pageSize);
             }
@@ -72,6 +73,7 @@ namespace BlogProject.Controllers
                     .Where(p => p.BlogId == id)
                     .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
                     .Include(p => p.Blog)
+                    .Include(p => p.Comments)
                     .OrderByDescending(p => p.Created)
                     .ToPagedListAsync(pageNumber, pageSize);
             }

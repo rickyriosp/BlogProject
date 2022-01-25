@@ -46,7 +46,7 @@ namespace BlogProject.Controllers
         // GET: Comments
         public async Task<IActionResult> DeletedIndex()
         {
-            var deletedComments = await _context.Comments.Include(c => c.Moderator).Where(c => c.Deleted != null).ToListAsync();
+            var deletedComments = await _context.Comments.Include(c => c.BlogUser).Include(c => c.Moderator).Where(c => c.Deleted != null).ToListAsync();
 
             ViewData["Index"] = "Deleted";
 
@@ -212,6 +212,85 @@ namespace BlogProject.Controllers
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Posts", new { slug }, "commentSection");
+        }
+
+        // POST: Comments/SoftDelete/5
+        [HttpPost]
+        public async Task<IActionResult> SoftDelete(int id, string slug)
+        {
+            var comment = await _context.Comments.FindAsync(id);
+
+            if (comment is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                comment.Moderated = null;
+                comment.ModeratedBody = null;
+
+                comment.Deleted = DateTime.Now.ToUniversalTime();
+                comment.ModeratorId = _userManager.GetUserId(User);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return RedirectToAction("Details", "Posts", new { slug }, "commentSection");
+        }
+
+        // GET: Comments/Restore/5
+        public async Task<IActionResult> Restore(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments
+                .Include(c => c.BlogUser)
+                .Include(c => c.Moderator)
+                .Include(c => c.Post)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return View(comment);
+        }
+
+        // POST: Comments/Restore/5
+        [HttpPost]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var comment = await _context.Comments.FindAsync(id);
+
+            if (comment is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                comment.Moderated = null;
+                comment.ModeratedBody = null;
+
+                comment.Deleted = null;
+                comment.ModeratorId = null;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return RedirectToAction("Index", "Comments");
         }
 
         private bool CommentExists(int id)

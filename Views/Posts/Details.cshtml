@@ -143,6 +143,10 @@
                     {
                         <span class="my-2 small font-italic">Comment not available...</span>
                     }
+                    else if (comment.Deleted is not null)
+                    {
+                        <p class="my-2 text-danger fw-bold">This comment was deleted by @comment.Moderator.FullName on @comment.Deleted?.ToString("MMM dd, yyyy")</p>
+                    }
                     else if (comment.Moderated is not null)
                     {
                         <p class="my-2">@comment.ModeratedBody</p>
@@ -161,7 +165,7 @@
                                 <button data-bs-toggle="modal" data-bs-target="#moderateModal_@comment.Id" class="btn btn-primary btn-sm font-weight-bold">MODERATE</button>
                             </div>
                             <div class="col-2">
-                                <form asp-controller="Comments" asp-action="Delete">
+                                <form asp-controller="Comments" asp-action="SoftDelete">
                                     @Html.Hidden("Id", comment.Id)
                                     @Html.Hidden("Slug", comment.Post.Slug)
 

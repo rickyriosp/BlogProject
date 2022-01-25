@@ -97,6 +97,27 @@ namespace BlogProject.Controllers
             return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
 
+        // GET: Posts/TagIndex/tag
+        public async Task<IActionResult> TagIndex(string tag)
+        {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return NotFound();
+            }
+
+            var posts = _blogSearchService.SearchTag(tag);
+
+            if (posts == null)
+            {
+                return NotFound();
+            }
+
+            var pageNumber = 1;
+            var pageSize = 5;
+
+            return View(await posts.ToPagedListAsync(pageNumber, pageSize));
+        }
+
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(string slug)
         {

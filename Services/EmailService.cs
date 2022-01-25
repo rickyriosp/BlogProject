@@ -20,9 +20,9 @@ namespace BlogProject.Services
         public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
         {
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
-            email.To.Add(MailboxAddress.Parse(_mailSettings.Mail));
+            email.Sender = MailboxAddress.Parse(_mailSettings.Email);
+            email.From.Add(MailboxAddress.Parse(_mailSettings.Email));
+            email.To.Add(MailboxAddress.Parse(_mailSettings.Email));
             email.Subject = subject;
 
             var builder = new BodyBuilder();
@@ -31,8 +31,8 @@ namespace BlogProject.Services
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.SslOnConnect);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(_mailSettings.User, _mailSettings.Password);
 
             await smtp.SendAsync(email);
 
@@ -43,8 +43,8 @@ namespace BlogProject.Services
         {
             var email = new MimeMessage();
 
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
-            email.From.Add(MailboxAddress.Parse(_mailSettings.Mail));
+            email.Sender = MailboxAddress.Parse(_mailSettings.Email);
+            email.From.Add(MailboxAddress.Parse(_mailSettings.Email));
             email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = subject;
 
@@ -59,8 +59,8 @@ namespace BlogProject.Services
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.SslOnConnect);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(_mailSettings.User, _mailSettings.Password);
 
             await smtp.SendAsync(email);
 

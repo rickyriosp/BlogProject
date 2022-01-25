@@ -3,6 +3,7 @@ using BlogProject.Enums;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,16 @@ namespace BlogProject.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<BlogUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly IImageService _imageService;
 
-        public DataService(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<BlogUser> userManager)
+        public DataService(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager, UserManager<BlogUser> userManager, IConfiguration configuration, IImageService imageService)
         {
             _dbContext = dbContext;
             _roleManager = roleManager;
             _userManager = userManager;
+            _configuration = configuration;
+            _imageService = imageService;
         }
 
         public async Task ManageDataAsync()
@@ -71,6 +76,8 @@ namespace BlogProject.Services
                 DisplayName = "RickyAdmin",
                 PhoneNumber = "(407) 548-4990",
                 EmailConfirmed = true,
+                ImageData = await _imageService.EncodeImageAsync(_configuration["DefaultUserImage"]),
+                ContentType = ".png",
             };
 
             // Step 2: Interact with the User Manager to create a new User defined by adminUser
@@ -93,6 +100,8 @@ namespace BlogProject.Services
                 DisplayName = "RickyMod",
                 PhoneNumber = "(407) 548-4990",
                 EmailConfirmed = true,
+                ImageData = await _imageService.EncodeImageAsync(_configuration["DefaultUserImage"]),
+                ContentType = ".png",
             };
 
             // Step 2 Repeat: Interact with the User Manager to create a new User defined by modUser

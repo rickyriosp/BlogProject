@@ -58,11 +58,6 @@ namespace BlogProject.Controllers
             return View(blogs);
         }
 
-        public IActionResult About()
-        {
-            return View();
-        }
-
         public IActionResult Contact()
         {
             return View();
@@ -81,11 +76,6 @@ namespace BlogProject.Controllers
             }
 
             return View(model);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

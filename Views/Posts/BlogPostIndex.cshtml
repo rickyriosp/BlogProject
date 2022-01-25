@@ -1,4 +1,5 @@
-﻿@using BlogProject.Models
+﻿@using BlogProject.Helpers
+@using BlogProject.Models
 @using BlogProject.Services
 @using BlogProject.Enums
 @using Microsoft.AspNetCore.Identity
@@ -6,8 +7,8 @@
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Web.Common
 
-@inject IImageService imageService
-@inject UserManager<BlogUser> userManager
+@inject IImageService _imageService
+@inject UserManager<BlogUser> _userManager
 
 @model IPagedList<Post>
 
@@ -15,73 +16,65 @@
     ViewData["Title"] = "Blog Index";
 }
 
-<!-- Main Content-->
-<div class="row">
-    @foreach (var post in Model)
-    {
-        // Is the logged in user the Author of this post?
-        var isAuthor = false;
-        if (User.Identity.IsAuthenticated)
-        {
-            isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
-            isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
-        }
+<section class="blog-list px-3 py-5 p-md-5">
+	<div class="container single-col-max-width">
+        <!-- Main Content-->
+        <div class="row">
+            @foreach (var post in Model)
+            {
+                // Is the logged in user the Author of this post?
+                var isAuthor = false;
+                if (User.Identity.IsAuthenticated)
+                {
+                    isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
+                    isAuthor = isAuthor && (post.BlogUserId == _userManager.GetUserId(User));
+                }
 
-        <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
-            <div class="card border-dark h-100">
-                <div class="card-body text-center d-flex flex-column">
-                    <div>
-                        <div class="bg-warning">
-                            <hr class="card-hr" />
-                            <h5 class="card-title">@post.Title</h5>
-                            <hr class="card-hr" />
-                        </div>
+                <!-- item -->
+                <div class="item mb-5">
+                    <!-- row -->
+				    <div class="row g-3 g-xl-0">
+					    <div class="col-12 col-md-2 col-xl-3">
+					        <img class="img-fluid post-thumb " src="@_imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card Image">
+					    </div>
+                        <!-- col -->
+					    <div class="col">
+						    <h3 class="title mb-1"><a class="text-link" asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug">@post.Title</a></h3>
+						    <div class="meta mb-1"><span class="date">Published @((DateTime.Now.Date - post.Created.Date).Days) days ago</span><span class="time">@ReadTimeHelper.GetReadTime(post.Content) min read</span><span class="comment"><a class="text-link" href="#">@post.Comments.ToArray().Length comments</a></span></div>
+						    <div class="intro">@post.Abstract</div>
+						    <a class="text-link" asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug">Read more &rarr;</a>
+                            @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
+                            {
+                                <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                <a class="text-link" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">Edit Post</a>
+                            }
+					    </div>
+                        <!-- end col -->
+				    </div>
+                    <!-- end row -->
+			    </div>
+                <!-- end item -->
+            }
+        </div>
 
-                        <p class="card-text cftooltip">
-                            @post.Abstract
-                        </p>
+        <hr />
 
-                        <span></span>
-                    </div>
-
-                    <div class="text-center d-grid mt-auto">
-                        <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug">
-                            Read More
-                        </a>
-                    </div>
-
-                    @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
-                    {
-                        <div class="text-center d-grid">
-                            <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">
-                                Edit Post
-                            </a>
-                        </div>
-                    }
-                </div>
-                
-                <img class="card-img-bottom" src="@imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card Image" />
+        <!-- Add Paging controls here -->
+        <div class="row">
+            <div class="col h3">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
             </div>
         </div>
-    }
-</div>
 
-<hr />
-
-<!-- Add Paging controls here -->
-<div class="row">
-    <div class="col h3">
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        <div class="row">
+            <div class="col">
+                @Html.PagedListPager(Model, page => Url.Action("BlogPostIndex", new { id = Model.FirstOrDefault().BlogId, page = page }),
+                 new PagedListRenderOptions
+                 {
+                     LiElementClasses = new string[] { "page-item" },
+                     PageClasses = new string[] { "page-link" }
+                 })
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        @Html.PagedListPager(Model, page => Url.Action("BlogPostIndex", new { id = Model.FirstOrDefault().BlogId, page = page }),
-         new PagedListRenderOptions
-         {
-             LiElementClasses = new string[] { "page-item" },
-             PageClasses = new string[] { "page-link" }
-         })
-    </div>
-</div>
+</section>

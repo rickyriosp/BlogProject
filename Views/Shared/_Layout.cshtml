@@ -1,8 +1,9 @@
-﻿@using BlogProject.Enums 
+﻿@using BlogProject.Enums
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
 <head>
+    <!-- Meta -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta property="og:title" content="Ricky's Blog" />
@@ -11,9 +12,9 @@
     <meta name="description" content="Ricky's Blog'" />
     <meta name="author" content="Ricky Rios" />
 
-    <title>@ViewData["Title"] - Blog Project</title>
+    <title>@ViewData["Title"] - Ricky's Blog</title>
 
-    <!-- Favicons-->
+    <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="~/assets/img/favicons/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="~/assets/img/favicons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="~/assets/img/favicons/favicon-16x16.png">
@@ -21,105 +22,136 @@
     <link rel="shortcut icon" href="~/assets/img/favicons/favicon.ico">
     <link rel="icon" type="image/x-icon" href="~/assets/img/favicons/favicon.ico" />
 
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
-    <!-- Google fonts-->
+    <!-- Font Awesome icons (free version) -->
+    @*<script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>*@
+
+    <!-- FontAwesome JS -->
+    <script defer src="~/assets/fontawesome/js/all.min.js"></script>
+
+    <!-- Google fonts -->
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
-    <!-- Summernote CSS-->
+
+    <!-- Summernote CSS -->
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="~/css/styles.css" rel="stylesheet" />
-    <!-- Custom CSS-->
-    <link href="~/css/custom.css" rel="stylesheet" />
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="~/assets/css/theme-1.css">
+
+    <!-- Core theme CSS (includes Bootstrap) -->
+    @*<link href="~/css/styles.css" rel="stylesheet" />*@
+    <!-- Custom CSS -->
+    @*<link href="~/css/custom.css" rel="stylesheet" />*@
+
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
-<body>
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Start Bootstrap</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-                Menu
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto py-4 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="About">About</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Posts" asp-action="Details">Sample Post</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Home" asp-action="Contact">Contact</a></li>
+<body class="d-flex flex-column h-100">
+    <!-- Sidebar -->
+    <header class="header text-center">	    
+	    <h1 class="blog-name pt-lg-4 mb-0"><a class="no-text-decoration" asp-controller="Home" asp-action="Index">Ricky's Blog</a></h1>
+        
+        <!-- Navigation -->
+	    <nav class="navbar navbar-expand-lg navbar-dark" >
+           
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div id="navigation" class="collapse navbar-collapse flex-column" >
+                <!-- profile section -->
+				<div class="profile-section pt-3 pt-lg-0">
+				    <img class="profile-image mb-3 rounded-circle mx-auto" src="~/assets/images/profile-pic.jpg" alt="image" >			
+					
+					<!-- bio -->
+                    <div class="bio mb-3">Hi, my name is Ricky and I'm a full-stack web developer. Welcome to my blog!</div>
+
+                    <!-- social list -->
+                    <ul class="social-list list-inline py-2 mx-auto">
+                        <li class="list-inline-item"><a href="https://www.linkedin.com/in/rickyriosp/" target="_blank"><i class="fab fa-linkedin-in fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="https://github.com/rickyriosp" target="_blank"><i class="fab fa-github-alt fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="https://twitter.com/rickyriosp" target="_blank"><i class="fab fa-twitter fa-fw"></i></a></li>
+                        <!-- <li class="list-inline-item"><a href="#" target="_blank"><i class="fab fa-stack-overflow fa-fw"></i></a></li> -->
+                        <!-- <li class="list-inline-item"><a href="#" target="_blank"><i class="fab fa-codepen fa-fw"></i></a></li> -->
+                    </ul>
+                    <!-- end social list -->
+			        <hr> 
+				</div>
+                <!-- end profile section -->
+				
+                <!-- navigation links -->
+				<ul class="navbar-nav flex-column text-start">
+					<li class="nav-item">
+					    <a class="nav-link active" asp-controller="Home" asp-action="Index"><i class="fas fa-home fa-fw me-2"></i>Home <span class="sr-only">(current)</span></a>
+					</li>
                     @if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
                     {
-                        <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" asp-controller="Blogs" asp-action="Create">Create Blog</a></li>
+					    <li class="nav-item"><a class="nav-link" asp-controller="Blogs" asp-action="Index"><i class="fas fa-bookmark fa-fw me-2"></i>Blog Index</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Blogs" asp-action="Create"><i class="fas fa-blog fa-fw me-2"></i>Create Blog</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Posts" asp-action="Create"><i class="fas fa-sticky-note fa-fw me-2"></i>Create Post</a></li>
+                    }
+                    @if (User.IsInRole(BlogRole.Moderator.ToString()))
+                    {
+                        <li class="nav-item"><a class="nav-link" asp-controller="Comments" asp-action="Index"><i class="fas fa-comments fa-fw me-2"></i>User Comments</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Comments" asp-action="ModeratedIndex"><i class="fas fa-remove-format fa-fw me-2"></i>Moderated Comments</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Comments" asp-action="DeletedIndex"><i class="fas fa-ban fa-fw me-2"></i>Deleted Comments</a></li>
                     }
                     <partial name="_LoginPartial" />
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Page Header-->
-    <header class="masthead" style="background-image: url(@ViewData["HeaderImage"]); height: 835px;">
-        <div class="container position-relative px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <div class="site-heading">
-                        <h1>@ViewData["MainText"]</h1>
-                        <span class="subheading">@ViewData["SubText"]</span>
-
-                        <form asp-controller="Posts" asp-action="SearchIndex">
-                            <div class="input-group mt-5">
-                                <input type="text" name="SearchTerm" class="form-control" placeholder="Search Term" />
-                                <button type="submit" class="btn btn-warning">Search</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+					<li class="nav-item">
+					    <a class="nav-link" href="https://riosr.com" target="_blank"><i class="fas fa-user fa-fw me-2"></i>About Me</a>
+					</li>
+				</ul>
+                <!-- end navigation links -->
+				
+				<div class="my-2 my-md-3">
+				    <a class="btn btn-primary" asp-controller="Home" asp-action="Contact">Get in Touch</a>
+				</div>
+			</div>
+		</nav>
     </header>
 
     <!-- Main Content-->
-    <div class="container">
+    <div class="main-wrapper flex-shrink-0">
+        <!-- Page Header -->
+        <section class="cta-section theme-bg-light py-5">
+            <div class="container text-center single-col-max-width">
+                @*<h2 class="heading">@ViewData["MainText"]</h2>
+                <div class="intro">@ViewData["SubText"]</div>*@
+                <h2 class="heading">Looking for a specific article?</h2>
+
+                <!-- search form -->
+                <div class="single-form-max-width pt-3 mx-auto">
+                    <form class="signup-form row g-2 g-lg-2 align-items-center" asp-controller="Posts" asp-action="SearchIndex">
+                        <div class="col-12 col-md-9">
+                            <label class="sr-only" for="SearchTerm">Your email</label>
+                            <input type="text" name="SearchTerm" class="form-control me-md-1 semail" placeholder="Search Term" />
+                        </div>
+                        <div class="col-12 col-md-2">
+                            <button type="submit" class="btn btn-primary">Search</button>
+	                    </div>
+                    </form>
+                </div>
+                 <!-- end search form -->
+            </div>
+        </section>
+
         @RenderBody()
     </div>
 
-    <!-- Footer-->
-    <footer class="border-top">
-        <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <ul class="list-inline text-center">
-                        <li class="list-inline-item">
-                            <a href="#!">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fas fa-circle fa-stack-2x"></i>
-                                    <i class="fab fa-twitter fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a href="#!">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fas fa-circle fa-stack-2x"></i>
-                                    <i class="fab fa-facebook-f fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li class="list-inline-item">
-                            <a href="#!">
-                                <span class="fa-stack fa-lg">
-                                    <i class="fas fa-circle fa-stack-2x"></i>
-                                    <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <div class="small text-center text-muted fst-italic">Copyright &copy; Your Website 2021</div>
-                </div>
-            </div>
-        </div>
+    <!-- Footer -->
+    <footer class="footer mt-auto sticky-footer text-center py-2 theme-bg-dark">
+        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, 
+        you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+        <small class="copyright">
+            Designed with 
+            <i class="fas fa-heart" style="color: #fb866a;"></i> by 
+            <a href="https://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> 
+            for developers | Modified by <a href="https://riosr.com" target="_blank">Ricky Rios</a>.
+        </small>
     </footer>
+
+    <!-- Javascript -->
+    <script src="~/assets/plugins/popper.min.js"></script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"

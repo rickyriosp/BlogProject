@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BlogProject.Data;
 using BlogProject.Models;
 using Microsoft.AspNetCore.Identity;
+using BlogProject.Enums;
 
 namespace BlogProject.Controllers
 {
@@ -23,23 +24,32 @@ namespace BlogProject.Controllers
         }
 
         // GET: Comments
-        public async Task<IActionResult> OriginalIndex()
+        public async Task<IActionResult> Index()
         {
-            var originalComments = await _context.Comments.ToListAsync();
+            var originalComments = await _context.Comments.Include(c => c.BlogUser).Where(c => c.Moderated == null && c.Deleted == null).ToListAsync();
+
+            ViewData["Index"] = "Regular";
+
             return View("Index", originalComments);
         }
 
         // GET: Comments
         public async Task<IActionResult> ModeratedIndex()
         {
-            var moderatedComments = await _context.Comments.Where(c => c.Moderated != null).ToListAsync();
+            var moderatedComments = await _context.Comments.Include(c => c.Moderator).Where(c => c.Moderated != null).ToListAsync();
+
+            ViewData["Index"] = "Moderated";
+
             return View("Index", moderatedComments);
         }
 
         // GET: Comments
         public async Task<IActionResult> DeletedIndex()
         {
-            var deletedComments = await _context.Comments.Where(c => c.Deleted != null).ToListAsync();
+            var deletedComments = await _context.Comments.Include(c => c.BlogUser).Include(c => c.Moderator).Where(c => c.Deleted != null).ToListAsync();
+
+            ViewData["Index"] = "Deleted";
+
             return View("Index", deletedComments);
         }
 
@@ -53,7 +63,7 @@ namespace BlogProject.Controllers
             if (ModelState.IsValid)
             {
                 comment.BlogUserId = _userManager.GetUserId(User);
-                comment.Created = DateTime.Now;
+                comment.Created = DateTime.Now.ToUniversalTime();
 
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
@@ -72,13 +82,17 @@ namespace BlogProject.Controllers
             }
 
             var comment = await _context.Comments.FindAsync(id);
+
             if (comment == null)
             {
                 return NotFound();
             }
-            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "Id", comment.BlogUserId);
-            ViewData["ModeratorId"] = new SelectList(_context.Users, "Id", "Id", comment.ModeratorId);
+
+            ViewData["BlogUserId"] = new SelectList(_context.Users, "Id", "FullName", comment.BlogUserId);
+            ViewData["ModeratorId"] = new SelectList(_context.Users, "Id", "FullName", comment.ModeratorId);
             ViewData["PostId"] = new SelectList(_context.Posts, "Id", "Title", comment.PostId);
+            ViewData["ModerationType"] = new SelectList(Enum.GetNames(typeof(ModerationType)), comment.ModerationType);
+
             return View(comment);
         }
 
@@ -102,7 +116,7 @@ namespace BlogProject.Controllers
                 try
                 {
                     newComment.Body = comment.Body;
-                    newComment.Updated = DateTime.Now;
+                    newComment.Updated = DateTime.Now.ToUniversalTime();
 
                     await _context.SaveChangesAsync();
                 }
@@ -145,7 +159,7 @@ namespace BlogProject.Controllers
                     newComment.ModeratedBody = comment.ModeratedBody;
                     newComment.ModerationType = comment.ModerationType;
 
-                    newComment.Moderated = DateTime.Now;
+                    newComment.Moderated = DateTime.Now.ToUniversalTime();
                     newComment.ModeratorId = _userManager.GetUserId(User);
 
                     await _context.SaveChangesAsync();
@@ -198,6 +212,85 @@ namespace BlogProject.Controllers
             _context.Comments.Remove(comment);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", "Posts", new { slug }, "commentSection");
+        }
+
+        // POST: Comments/SoftDelete/5
+        [HttpPost]
+        public async Task<IActionResult> SoftDelete(int id, string slug)
+        {
+            var comment = await _context.Comments.FindAsync(id);
+
+            if (comment is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                comment.Moderated = null;
+                comment.ModeratedBody = null;
+
+                comment.Deleted = DateTime.Now.ToUniversalTime();
+                comment.ModeratorId = _userManager.GetUserId(User);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return RedirectToAction("Details", "Posts", new { slug }, "commentSection");
+        }
+
+        // GET: Comments/Restore/5
+        public async Task<IActionResult> Restore(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await _context.Comments
+                .Include(c => c.BlogUser)
+                .Include(c => c.Moderator)
+                .Include(c => c.Post)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            return View(comment);
+        }
+
+        // POST: Comments/Restore/5
+        [HttpPost]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var comment = await _context.Comments.FindAsync(id);
+
+            if (comment is null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                comment.Moderated = null;
+                comment.ModeratedBody = null;
+
+                comment.Deleted = null;
+                comment.ModeratorId = null;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return RedirectToAction("Index", "Comments");
         }
 
         private bool CommentExists(int id)

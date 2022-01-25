@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using X.PagedList;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using BlogProject.Enums;
 
 namespace BlogProject.Controllers
 {
@@ -55,18 +56,33 @@ namespace BlogProject.Controllers
 
             var blog = _context.Blogs.Find(id);
 
-            var posts = _context.Posts
-                .Where(p => p.BlogId == id)
-                .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
-                .Include(p => p.Blog)
-                .OrderByDescending(p => p.Created)
-                .ToPagedListAsync(pageNumber, pageSize);
+            IPagedList<Post> posts;
+
+            if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
+            {
+                posts = await _context.Posts
+                    .Where(p => p.BlogId == id)
+                    .Include(p => p.Blog)
+                    .Include(p => p.Comments)
+                    .OrderByDescending(p => p.Created)
+                    .ToPagedListAsync(pageNumber, pageSize);
+            }
+            else
+            {
+                posts = await _context.Posts
+                    .Where(p => p.BlogId == id)
+                    .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
+                    .Include(p => p.Blog)
+                    .Include(p => p.Comments)
+                    .OrderByDescending(p => p.Created)
+                    .ToPagedListAsync(pageNumber, pageSize);
+            }
 
             ViewData["HeaderImage"] = _imageService.DecodeImage(blog.ImageData, blog.ContentType);
             ViewData["MainText"] = blog.Name;
             ViewData["SubText"] = blog.Description;
 
-            return View(await posts);
+            return View(posts);
         }
 
         public async Task<IActionResult> SearchIndex(int? page, string searchTerm)
@@ -77,6 +93,27 @@ namespace BlogProject.Controllers
             var pageSize = 5;
 
             var posts = _blogSearchService.Search(searchTerm);
+
+            return View(await posts.ToPagedListAsync(pageNumber, pageSize));
+        }
+
+        // GET: Posts/TagIndex/tag
+        public async Task<IActionResult> TagIndex(string tag)
+        {
+            if (string.IsNullOrEmpty(tag))
+            {
+                return NotFound();
+            }
+
+            var posts = _blogSearchService.SearchTag(tag);
+
+            if (posts == null)
+            {
+                return NotFound();
+            }
+
+            var pageNumber = 1;
+            var pageSize = 5;
 
             return View(await posts.ToPagedListAsync(pageNumber, pageSize));
         }
@@ -137,7 +174,7 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                post.Created = DateTime.Now;
+                post.Created = DateTime.Now.ToUniversalTime();
 
                 var authorId = _userManager.GetUserId(User);
                 post.BlogUserId = authorId;
@@ -242,7 +279,7 @@ namespace BlogProject.Controllers
                         .Include(p => p.Tags)
                         .FirstOrDefaultAsync(p => p.Id == post.Id);
 
-                    newPost.Updated = DateTime.Now;
+                    newPost.Updated = DateTime.Now.ToUniversalTime();
 
                     if (newPost.BlogId != post.BlogId)
                     {

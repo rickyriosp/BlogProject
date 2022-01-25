@@ -1,0 +1,80 @@
+﻿@using BlogProject.Helpers
+@using BlogProject.Models
+@using BlogProject.Services
+@using BlogProject.Enums
+@using Microsoft.AspNetCore.Identity
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+
+@inject IImageService _imageService
+@inject UserManager<BlogUser> _userManager
+
+@model IPagedList<Post>
+
+@{
+    ViewData["Title"] = "Tag Index";
+}
+
+<!-- Main Content-->
+<section class="blog-list px-3 py-5 p-md-5">
+    <div class="container single-col-max-width">
+        <div class="row">
+            @foreach (var post in Model)
+            {
+                // Is the logged in user the Author of this post?
+                var isAuthor = false;
+                if (User.Identity.IsAuthenticated)
+                {
+                    isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
+                    isAuthor = isAuthor && (post.BlogUserId == _userManager.GetUserId(User));
+                }
+
+                <!-- item -->
+                <div class="item mb-5">
+                    <!-- row -->
+				    <div class="row g-3 g-xl-0">
+					    <div class="col-12 col-md-2 col-xl-3">
+					        <img class="img-fluid post-thumb " src="@_imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card Image">
+					    </div>
+                        <!-- col -->
+					    <div class="col">
+						    <h3 class="title mb-1"><a class="text-link" asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug">@post.Title</a></h3>
+						    <div class="meta mb-1"><span class="date">Published @((DateTime.Now.Date - post.Created.Date).Days) days ago</span><span class="time">@ReadTimeHelper.GetReadTime(post.Content) min read</span><span class="comment"><a class="text-link" href="#">@post.Comments.ToArray().Length comments</a></span></div>
+						    <div class="intro">@post.Abstract</div>
+						    <a class="text-link" asp-controller="Posts" asp-action="Details" asp-route-slug="@post.Slug">Read more &rarr;</a>
+                            @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
+                            {
+                                <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                <a class="text-link" asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id">Edit Post</a>
+                            }
+					    </div>
+                        <!-- end col -->
+				    </div>
+                    <!-- end row -->
+			    </div>
+                <!-- end item -->
+            }
+        </div>
+
+        <hr />
+
+        <!-- Add Paging controls here -->
+        <div class="row">
+            <div class="col h3">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                @Html.PagedListPager(Model, page => Url.Action("SearchIndex", new { page = page, searchTerm = ViewData["SearchTerm"] }),
+                 new PagedListRenderOptions
+                 {
+                     LiElementClasses = new string[] { "page-item" },
+                     PageClasses = new string[] { "page-link" }
+                 })
+            </div>
+        </div>
+    </div>
+</section>

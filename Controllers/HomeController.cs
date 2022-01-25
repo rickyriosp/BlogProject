@@ -1,4 +1,5 @@
 ﻿using BlogProject.Data;
+using BlogProject.Enums;
 using BlogProject.Models;
 using BlogProject.Services;
 using BlogProject.ViewModels;
@@ -30,24 +31,31 @@ namespace BlogProject.Controllers
         public async Task<IActionResult> Index(int? page)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 5;
+            var pageSize = 6;
 
-            var blogs = _context.Blogs
-                .Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))
-                .Include(b => b.BlogUser)
-                .OrderByDescending(b => b.Created)
-                .ToPagedListAsync(pageNumber, pageSize);
+            IPagedList<Blog> blogs;
+
+            if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
+            {
+                blogs = await _context.Blogs
+                    .Include(b => b.BlogUser)
+                    .OrderByDescending(b => b.Created)
+                    .ToPagedListAsync(pageNumber, pageSize);
+            }
+            else
+            {
+                blogs = await _context.Blogs
+                   .Where(b => b.Posts.Any(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady))
+                   .Include(b => b.BlogUser)
+                   .OrderByDescending(b => b.Created)
+                   .ToPagedListAsync(pageNumber, pageSize);
+            }
 
             ViewData["HeaderImage"] = "/assets/img/home-bg.jpg";
             ViewData["MainText"] = "Ricky's Blog";
             ViewData["SubText"] = "This is my blog";
 
-            return View(await blogs);
-        }
-
-        public IActionResult About()
-        {
-            return View();
+            return View(blogs);
         }
 
         public IActionResult Contact()
@@ -68,11 +76,6 @@ namespace BlogProject.Controllers
             }
 
             return View(model);
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

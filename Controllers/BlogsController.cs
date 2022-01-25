@@ -71,7 +71,7 @@ namespace BlogProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                blog.Created = DateTime.Now;
+                blog.Created = DateTime.Now.ToUniversalTime();
                 blog.BlogUserId = _userManager.GetUserId(User);
 
                 // Use the _imageService to store the incoming user specified image
@@ -123,7 +123,7 @@ namespace BlogProject.Controllers
                 try
                 {
                     var newBlog = await _context.Blogs.FindAsync(blog.Id);
-                    newBlog.Updated = DateTime.Now;
+                    newBlog.Updated = DateTime.Now.ToUniversalTime();
 
                     if (newBlog.Name != blog.Name)
                     {

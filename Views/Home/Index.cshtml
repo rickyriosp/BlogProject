@@ -42,86 +42,63 @@
 
 <!-- Main Content-->
 <div class="blog-list px-3 py-5 p-md-5">
-    <div class="row">
+    <div class="container single-col-max-width">
         @foreach (var blog in Model)
         {
-            <div class="col-sm-12 col-md-6 col-xxl-4 mt-2">
-                <div class="item card border-dark bg-light h-100">
-                    <img class="card-img-top" style="height: 150px;" src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="Card Image" />
+            // Is the logged in user the Author of this post?
+            var isAuthor = false;
+            if (User.Identity.IsAuthenticated)
+            {
+                isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
+                isAuthor = isAuthor && (blog.BlogUserId == _userManager.GetUserId(User));
+            }
 
-                    <div class="card-body text-center d-flex flex-column">
-                        <div>
-                            <div style="background-color: #5FCB71">
-                                <hr class="card-hr" />
-                                <h5 class="card-title clampTitle px-2">
-                                    <a asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id"
-                                       data-bs-toggle="tooltip"
-                                       data-bs-placement="top"
-                                       data-bs-original-title="@blog.Name"
-                                       title="">
-                                        @blog.Name
-                                    </a>
-                                </h5>
-                                <hr class="card-hr" />
-                            </div>
-
-                            <p class="card-text cftooltip clampOverview"
-                               data-bs-toggle="tooltip"
-                               data-bs-placement="top"
-                               data-bs-original-title="@blog.Description"
-                               title="">
-                                @blog.Description
-                            </p>
-
-                            <span></span>
-                        </div>
-
-                        <div class="text-center d-grid mt-auto">
-                            <a class="btn btn-dark mb-2" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">
-                                Read Posts
-                            </a>
-                        </div>
-
-                        @if (User.IsInRole(BlogRole.Administrator.ToString()))
+            <!-- item -->
+            <div class="item mb-5">
+                <!-- row -->
+				<div class="row g-3 g-xl-0">
+					<div class="col-12 col-md-2 col-xl-3">
+					    <img class="img-fluid post-thumb " src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="Card Image">
+					</div>
+                    <!-- col -->
+					<div class="col">
+						<h3 class="title mb-1"><a class="text-link" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">@blog.Name</a></h3>
+						<div class="meta mb-1"><span class="date">Published on @blog.Created.ToString("MM/dd/yyyy")</span></div>
+						<div class="intro">@blog.Description</div>
+						<a class="text-link" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">Read Posts &rarr;</a>
+                        @if (User.IsInRole(BlogRole.Administrator.ToString()) || isAuthor)
                         {
-                            <div class="text-center d-grid">
-                                <a class="btn btn-dark mb-2" asp-controller="Posts" asp-action="Create" asp-route-id="@blog.Id">
-                                    Create Post
-                                </a>
-                            </div>
+                            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                            <a class="text-link" asp-controller="Posts" asp-action="Create" asp-route-id="@blog.Id">Create Post</a>
+                            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                            <a class="text-link" asp-controller="Blogs" asp-action="Edit" asp-route-id="@blog.Id">Edit Blog</a>
                         }
-
-                        @if (User.IsInRole(BlogRole.Administrator.ToString()))
-                        {
-                            <div class="text-center d-grid">
-                                <a class="btn btn-danger mb-2" asp-controller="Blogs" asp-action="Edit" asp-route-id="@blog.Id">
-                                    Edit Blog
-                                </a>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+					</div>
+                    <!-- end col -->
+				</div>
+                <!-- end row -->
+			</div>
+            <!-- end item -->
         }
-    </div>
 
-    <hr />
+        <hr />
 
-    <!-- Add Paging controls here -->
-    <div class="row">
-        <div class="col h3">
-            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        <!-- Add Paging controls here -->
+        <div class="row">
+            <div class="col h3">
+                Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col">
-            @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }),
-             new PagedListRenderOptions
-             {
-                 LiElementClasses = new string[] { "page-item" },
-                 PageClasses = new string[] { "page-link" }
-             })
+        <div class="row">
+            <div class="col">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }),
+                 new PagedListRenderOptions
+                 {
+                     LiElementClasses = new string[] { "page-item" },
+                     PageClasses = new string[] { "page-link" }
+                 })
+            </div>
         </div>
     </div>
 </div>
@@ -137,9 +114,9 @@
             })
         }
 
-        $(document).ready(function () {
-            $("p").tooltip();
-            $("a").tooltip();
-        })
+        //$(document).ready(function () {
+        //    $("p").tooltip();
+        //    $("a").tooltip();
+        //})
     </script>
 }

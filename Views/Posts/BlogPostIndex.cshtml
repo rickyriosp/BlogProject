@@ -7,8 +7,8 @@
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Web.Common
 
-@inject IImageService imageService
-@inject UserManager<BlogUser> userManager
+@inject IImageService _imageService
+@inject UserManager<BlogUser> _userManager
 
 @model IPagedList<Post>
 
@@ -27,7 +27,7 @@
                 if (User.Identity.IsAuthenticated)
                 {
                     isAuthor = User.IsInRole(BlogRole.GuestAuthor.ToString());
-                    isAuthor = isAuthor && (post.BlogUserId == userManager.GetUserId(User));
+                    isAuthor = isAuthor && (post.BlogUserId == _userManager.GetUserId(User));
                 }
 
                 <!-- item -->
@@ -35,7 +35,7 @@
                     <!-- row -->
 				    <div class="row g-3 g-xl-0">
 					    <div class="col-12 col-md-2 col-xl-3">
-					        <img class="img-fluid post-thumb " src="@imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card Image">
+					        <img class="img-fluid post-thumb " src="@_imageService.DecodeImage(post.ImageData, post.ContentType)" alt="Card Image">
 					    </div>
                         <!-- col -->
 					    <div class="col">

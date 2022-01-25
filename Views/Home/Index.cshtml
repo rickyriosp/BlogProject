@@ -15,60 +15,95 @@
     ViewData["Title"] = "Home Page";
 }
 
+<style>
+    h5.card-title {
+        /*height: 2.5em;*/
+    }
+
+    .clampTitle {
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .clampOverview {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .clampTitle a {
+        color: #fff;
+        text-decoration: none;
+    }
+</style>
+
 <!-- Main Content-->
 <div class="blog-list px-3 py-5 p-md-5">
-    @foreach (var blog in Model)
-    {
-        <div class="col-sm-12 col-md-6 col-lg-4 mt-2">
-            <div class="card border-dark h-100">
-                <img class="card-img-top" src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="Card Image" />
+    <div class="row">
+        @foreach (var blog in Model)
+        {
+            <div class="col-sm-12 col-md-6 col-xxl-4 mt-2">
+                <div class="item card border-dark bg-light h-100">
+                    <img class="card-img-top" style="height: 150px;" src="@_imageService.DecodeImage(blog.ImageData, blog.ContentType)" alt="Card Image" />
 
-                <div class="card-body text-center d-flex flex-column">
-                    <div>
-                        <div class="bg-warning">
-                            <hr class="card-hr" />
-                            <h5 class="card-title">@blog.Name</h5>
-                            <hr class="card-hr" />
+                    <div class="card-body text-center d-flex flex-column">
+                        <div>
+                            <div style="background-color: #5FCB71">
+                                <hr class="card-hr" />
+                                <h5 class="card-title clampTitle px-2">
+                                    <a asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top"
+                                       data-bs-original-title="@blog.Name"
+                                       title="">
+                                        @blog.Name
+                                    </a>
+                                </h5>
+                                <hr class="card-hr" />
+                            </div>
+
+                            <p class="card-text cftooltip clampOverview"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               data-bs-original-title="@blog.Description"
+                               title="">
+                                @blog.Description
+                            </p>
+
+                            <span></span>
                         </div>
 
-                        <p class="card-text cftooltip"
-                           data-bs-toggle="tooltip"
-                           data-bs-placement="top"
-                           data-bs-original-title="@blog.Description"
-                           title="">
-                            @blog.Description
-                        </p>
-
-                        <span></span>
-                    </div>
-
-                    <div class="text-center d-grid mt-auto">
-                        <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">
-                            Read Posts
-                        </a>
-                    </div>
-
-                    @if (User.IsInRole(BlogRole.Administrator.ToString()))
-                    {
-                        <div class="text-center d-grid">
-                            <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="Create" asp-route-id="@blog.Id">
-                                Create Post
+                        <div class="text-center d-grid mt-auto">
+                            <a class="btn btn-dark mb-2" asp-controller="Posts" asp-action="BlogPostIndex" asp-route-id="@blog.Id">
+                                Read Posts
                             </a>
                         </div>
-                    }
 
-                    @if (User.IsInRole(BlogRole.Administrator.ToString()))
-                    {
-                        <div class="text-center d-grid">
-                            <a class="btn btn-dark btn-sm mb-2" asp-controller="Posts" asp-action="Edit" asp-route-id="@blog.Id">
-                                Edit Blog
-                            </a>
-                        </div>
-                    }
+                        @if (User.IsInRole(BlogRole.Administrator.ToString()))
+                        {
+                            <div class="text-center d-grid">
+                                <a class="btn btn-dark mb-2" asp-controller="Posts" asp-action="Create" asp-route-id="@blog.Id">
+                                    Create Post
+                                </a>
+                            </div>
+                        }
+
+                        @if (User.IsInRole(BlogRole.Administrator.ToString()))
+                        {
+                            <div class="text-center d-grid">
+                                <a class="btn btn-danger mb-2" asp-controller="Blogs" asp-action="Edit" asp-route-id="@blog.Id">
+                                    Edit Blog
+                                </a>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 
     <hr />
 
@@ -104,6 +139,7 @@
 
         $(document).ready(function () {
             $("p").tooltip();
+            $("a").tooltip();
         })
     </script>
 }

@@ -56,17 +56,21 @@ namespace BlogProject.Controllers
 
             var blog = _context.Blogs.Find(id);
 
-            var posts = _context.Posts
-                .Where(p => p.BlogId == id)
-                .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
-                .Include(p => p.Blog)
-                .OrderByDescending(p => p.Created)
-                .ToPagedListAsync(pageNumber, pageSize);
+            IPagedList<Post> posts;
 
             if (User.IsInRole(BlogRole.Administrator.ToString()) || User.IsInRole(BlogRole.GuestAuthor.ToString()))
             {
-                posts = _context.Posts
+                posts = await _context.Posts
                     .Where(p => p.BlogId == id)
+                    .Include(p => p.Blog)
+                    .OrderByDescending(p => p.Created)
+                    .ToPagedListAsync(pageNumber, pageSize);
+            }
+            else
+            {
+                posts = await _context.Posts
+                    .Where(p => p.BlogId == id)
+                    .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
                     .Include(p => p.Blog)
                     .OrderByDescending(p => p.Created)
                     .ToPagedListAsync(pageNumber, pageSize);
@@ -76,7 +80,7 @@ namespace BlogProject.Controllers
             ViewData["MainText"] = blog.Name;
             ViewData["SubText"] = blog.Description;
 
-            return View(await posts);
+            return View(posts);
         }
 
         public async Task<IActionResult> SearchIndex(int? page, string searchTerm)

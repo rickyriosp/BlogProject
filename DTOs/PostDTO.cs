@@ -23,8 +23,10 @@ namespace BlogProject.DTOs
         [Display(Name = "Created Date")]
         public DateTime Created { get; set; }
 
+        public string Slug { get; set; }
+
         [Display(Name = "Blog Image")]
-        public byte[] ImageData { get; set; }
+        public string ImageData { get; set; }
 
         [Display(Name = "Content Type")]
         public string ContentType { get; set; }

@@ -1,17 +1,19 @@
 ﻿using BlogProject.Data;
 using BlogProject.DTOs;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlogProject.ApiControllers
 {
+    [ApiController]
     [Route("Api/[controller]")]
     [Produces("application/json")]
-    [ApiController]
     public class PostController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -53,7 +55,8 @@ namespace BlogProject.ApiControllers
                     Title = post.Title,
                     Abstract = post.Abstract,
                     Created = post.Created,
-                    ImageData = post.ImageData,
+                    Slug = post.Slug,
+                    ImageData = Convert.ToBase64String(post.ImageData),
                     ContentType = post.ContentType,
                 });
             }
@@ -95,7 +98,8 @@ namespace BlogProject.ApiControllers
                 Title = post.Title,
                 Abstract = post.Abstract,
                 Created = post.Created,
-                ImageData = post.ImageData,
+                Slug = post.Slug,
+                ImageData = Convert.ToBase64String(post.ImageData),
                 ContentType = post.ContentType,
             };
 

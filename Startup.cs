@@ -17,6 +17,8 @@ namespace BlogProject
 {
     public class Startup
     {
+        private string MyAllowSpecificOrigins = "MyAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -44,12 +46,25 @@ namespace BlogProject
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            
             // Swagger API
             services.AddSwaggerGen(options =>
             {
                 // using System.Reflection;
                 var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("https://*.riosr.com")
+                                .SetIsOriginAllowedToAllowWildcardSubdomains();
+                        // Allow localhost during development and testing
+                        builder.SetIsOriginAllowed(origin => new Uri(origin).IsLoopback);
+                    });
             });
 
             // Register my custom DataService class
@@ -93,6 +108,7 @@ namespace BlogProject
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

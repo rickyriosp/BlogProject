@@ -9,6 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace BlogProject
 {
@@ -41,6 +44,13 @@ namespace BlogProject
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            // Swagger API
+            services.AddSwaggerGen(options =>
+            {
+                // using System.Reflection;
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
 
             // Register my custom DataService class
             services.AddScoped<DataService>();
@@ -68,6 +78,10 @@ namespace BlogProject
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
+
+                // Swagger API
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {

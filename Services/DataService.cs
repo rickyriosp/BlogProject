@@ -61,7 +61,7 @@ namespace BlogProject.Services
             // If there are already Users in the system: do nothing
             if (_dbContext.Users.Any())
             {
-                //return;
+                return;
             }
 
             // Otherwise we want to create a few Users

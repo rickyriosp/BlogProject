@@ -58,10 +58,10 @@ namespace BlogProject.Services
 
         private async Task SeedUsersAsync()
         {
-            // IF there are already Users in the system: do nothing
+            // If there are already Users in the system: do nothing
             if (_dbContext.Users.Any())
             {
-                return;
+                //return;
             }
 
             // Otherwise we want to create a few Users
@@ -112,6 +112,78 @@ namespace BlogProject.Services
             if (await _roleManager.RoleExistsAsync(BlogRole.Moderator.ToString()) && createdUser.Succeeded)
             {
                 await _userManager.AddToRoleAsync(modUser, BlogRole.Moderator.ToString());
+            }
+
+            // Step 1 Repeat: Demo User
+            var demoUser = new BlogUser()
+            {
+                Email = "demo.user@mailinator.com",
+                UserName = "demo.user@mailinator.com",
+                FirstName = "Demo",
+                LastName = "User",
+                DisplayName = "DemoUser",
+                PhoneNumber = "(123) 456-7890",
+                EmailConfirmed = true,
+                ImageData = await _imageService.EncodeImageAsync(_configuration["DefaultUserImage"]),
+                ContentType = ".png",
+            };
+
+            // Step 2 Repeat: Interact with the User Manager to create a new User defined by modUser
+            // IdentityUser Password needs UpperCase, Number, and Symbol
+            createdUser = await _userManager.CreateAsync(demoUser, "Password123!");
+
+            // Step 3 Repeat: Add the new User to the Moderator role
+            if (await _roleManager.RoleExistsAsync(BlogRole.User.ToString()) && createdUser.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(demoUser, BlogRole.User.ToString());
+            }
+
+            // Step 1 Repeat: Demo Moderator
+            var demoMod = new BlogUser()
+            {
+                Email = "demo.moderator@mailinator.com",
+                UserName = "demo.moderator@mailinator.com",
+                FirstName = "Demo",
+                LastName = "Moderator",
+                DisplayName = "DemoModerator",
+                PhoneNumber = "(123) 456-7890",
+                EmailConfirmed = true,
+                ImageData = await _imageService.EncodeImageAsync(_configuration["DefaultUserImage"]),
+                ContentType = ".png",
+            };
+
+            // Step 2 Repeat: Interact with the User Manager to create a new User defined by modUser
+            // IdentityUser Password needs UpperCase, Number, and Symbol
+            createdUser = await _userManager.CreateAsync(demoMod, "Password123!");
+
+            // Step 3 Repeat: Add the new User to the Moderator role
+            if (await _roleManager.RoleExistsAsync(BlogRole.Moderator.ToString()) && createdUser.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(demoMod, BlogRole.Moderator.ToString());
+            }
+
+            // Step 1 Repeat: Demo Admin
+            var demoAdmin = new BlogUser()
+            {
+                Email = "demo.admin@mailinator.com",
+                UserName = "demo.admin@mailinator.com",
+                FirstName = "Demo",
+                LastName = "Admin",
+                DisplayName = "DemoAdmin",
+                PhoneNumber = "(123) 456-7890",
+                EmailConfirmed = true,
+                ImageData = await _imageService.EncodeImageAsync(_configuration["DefaultUserImage"]),
+                ContentType = ".png",
+            };
+
+            // Step 2 Repeat: Interact with the User Manager to create a new User defined by modUser
+            // IdentityUser Password needs UpperCase, Number, and Symbol
+            createdUser = await _userManager.CreateAsync(demoAdmin, "Password123!");
+
+            // Step 3 Repeat: Add the new User to the Moderator role
+            if (await _roleManager.RoleExistsAsync(BlogRole.Administrator.ToString()) && createdUser.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(demoAdmin, BlogRole.Administrator.ToString());
             }
         }
     }

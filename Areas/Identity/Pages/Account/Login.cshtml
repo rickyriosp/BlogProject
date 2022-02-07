@@ -37,6 +37,15 @@
                             <button type="submit" class="btn btn-primary my-3">Log in</button>
                         </div>
                         <div class="form-group">
+                            <a type="button" class="btn btn-primary my-3" asp-page-handler="LogInDemoUser">Log in as Demo User</a>
+                        </div>
+                        <div class="form-group">
+                            <a type="button" class="btn btn-primary my-3" asp-page-handler="LogInDemoMod">Log in as Demo Moderator</a>
+                        </div>
+                        <div class="form-group">
+                            <a type="button" class="btn btn-primary my-3" asp-page-handler="LogInDemoAdmin">Log in as Demo Admin</a>
+                        </div>
+                        <div class="form-group">
                             <p>
                                 <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
                             </p>

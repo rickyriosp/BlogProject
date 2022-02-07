@@ -17,8 +17,6 @@ namespace BlogProject
 {
     public class Startup
     {
-        private string MyAllowSpecificOrigins = "MyAllowSpecificOrigins";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;

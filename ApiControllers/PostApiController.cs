@@ -34,7 +34,7 @@ namespace BlogProject.ApiControllers
         /// <response code="200">Returns a list with the posts ordered by creation date</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IEnumerable<PostDTO>> GetRecent(int? postQty)
+        public IEnumerable<PostDTO> GetRecent(int? postQty)
         {
             var size = postQty ?? 3;
             var posts = new List<PostDTO>();

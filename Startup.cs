@@ -58,10 +58,11 @@ namespace BlogProject
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("https://*.riosr.com")
+                        builder.WithOrigins("https://riosr.com",
+                                                    "https://*.riosr.com")
                                 .SetIsOriginAllowedToAllowWildcardSubdomains();
                         // Allow localhost during development and testing
-                        builder.SetIsOriginAllowed(origin => new Uri(origin).IsLoopback);
+                        //builder.SetIsOriginAllowed(origin => new Uri(origin).IsLoopback);
                     });
             });
 

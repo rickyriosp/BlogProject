@@ -68,7 +68,19 @@ namespace BlogProject.ApiControllers
         /// Retrieves a post by unique id.
         /// </summary>
         /// <remarks>
-        /// More elaborate description
+        /// Sample value of post:
+        /// 
+        ///     {
+        ///         "id": 0
+        ///         "blogName": "string"
+        ///         "author": "string"
+        ///         "title": "string"
+        ///         "abstract": "string"
+        ///         "created": "2022-02-16"
+        ///         "slug": "string"
+        ///         "imageData": "string"
+        ///         "contentType": "string"
+        ///     }
         /// </remarks>
         /// <param name="id">The post id to query</param>
         /// <returns>The post that matches the id</returns>

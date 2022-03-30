@@ -34,16 +34,17 @@ namespace BlogProject.ApiControllers
         /// <response code="200">Returns a list with the posts ordered by creation date</response>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IEnumerable<PostDTO> GetRecent(int? postQty)
+        public async Task<ActionResult<IEnumerable<PostDTO>>> GetRecent(int? postQty)
         {
             var size = postQty ?? 3;
             var posts = new List<PostDTO>();
-            var postModels = _context.Posts
+            var postModels = await _context.Posts
                 .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
                 .Include(p => p.Blog)
                 .Include(p => p.BlogUser)
                 .OrderByDescending(p => p.Created)
-                .Take(size);
+                .Take(size)
+                .ToListAsync();
 
             foreach (var post in postModels)
             {
@@ -61,7 +62,7 @@ namespace BlogProject.ApiControllers
                 });
             }
 
-            return posts;
+            return Ok(posts);
         }
 
         /// <summary>
@@ -89,13 +90,13 @@ namespace BlogProject.ApiControllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetPost(int id)
+        public async Task<ActionResult<PostDTO>> GetPost(int id)
         {
             var post = await _context.Posts
                 .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
                 .Include(p => p.Blog)
                 .Include(p => p.BlogUser)
-                .FirstAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (post == null)
             {

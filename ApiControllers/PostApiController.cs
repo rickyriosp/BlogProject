@@ -40,9 +40,9 @@ namespace BlogProject.ApiControllers
             var posts = new List<PostDTO>();
             var postModels = await _context.Posts
                 .Where(p => p.ReadyStatus == Enums.ReadyStatus.ProductionReady)
+                .OrderByDescending(p => p.Created)
                 .Include(p => p.Blog)
                 .Include(p => p.BlogUser)
-                .OrderByDescending(p => p.Created)
                 .Take(size)
                 .ToListAsync();
 

@@ -20,8 +20,8 @@ namespace BlogProject.Services
         public async Task SendContactEmailAsync(string emailFrom, string name, string subject, string htmlMessage)
         {
             var email = new MimeMessage();
-            email.Sender = MailboxAddress.Parse(_mailSettings.Email);
-            email.From.Add(MailboxAddress.Parse(_mailSettings.Email));
+            email.Sender = new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Email);
+            email.From.Add(new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Email));
             email.To.Add(MailboxAddress.Parse(_mailSettings.Email));
             email.Subject = subject;
 
@@ -43,8 +43,8 @@ namespace BlogProject.Services
         {
             var email = new MimeMessage();
 
-            email.Sender = MailboxAddress.Parse(_mailSettings.Email);
-            email.From.Add(MailboxAddress.Parse(_mailSettings.Email));
+            email.Sender = new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Email);
+            email.From.Add(new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Email));
             email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = subject;
 
